@@ -13,11 +13,38 @@ import os
 import csv
 import re
 
+
 webshell_extensions = ['.php', '.asp', '.jsp'] # add any other extensions commonly used for webshells
 webshell_keywords = ['system', 'shell_exec', 'eval'] # add any other keywords commonly used in webshells
-find_special_character = re.compile(r'[^A-Za-z]')   # 파일 확장자는 알파벳 대소문자만 허용
+SPECIAL_CHARACTER_DETECTION_PATTERN = re.compile(r'[^A-Za-z]')   # 파일 확장자는 알파벳 대소문자만 허용
 
 
+# 1. 확장자 속 특수문자 파악
+def check_special_character_in_file_extension(file_path):
+    file_extension = os.path.splitext(file_path)[1]
+    extension = file_extension[1:]
+
+    if SPECIAL_CHARACTER_DETECTION_PATTERN.search(extension):  # 정규표현식으로 확장자 내 특수문자 파악
+       print(file_path)
+       return True
+    else:
+        return False
+
+
+# 2. 여려 확장자를 가진 파일 파악
+def check_multiple_extensions_of_file(file_path):
+    parsed_path = file_path.split('/')   # 경로 parse
+    file_name = parsed_path[-1]  # 파일명
+    file_name_and_extension = file_name.split('.')   # 파일명, 확장자 parse
+
+    if len(file_name_and_extension) != 2:  # 확장자가 2개 이상, 또는 아예 없는 경우
+        print(file_path)
+        return True
+    else:
+        return False
+
+
+# main 함수
 def detect_webshell(root_dir):
     with open('webshell_detection_results.csv', mode='w') as csv_file:
         fieldnames = ['File Path', 'Keywords Found']
@@ -29,19 +56,8 @@ def detect_webshell(root_dir):
                 file_path = os.path.join(root, file)
                 file_extension = os.path.splitext(file_path)[1]
                 
-                # 1. 정규표현식을 이용하여 확장자에 특수문자가 포함된 파일을 탐지
-                a = file_extension[1:]  # 확장자 앞 . 제거
-                if find_special_character.search(a):  # 정규표현식으로 확장자 내 특수문자 파악
-                    print(a)
-                
-                # 2. 중복되는 확장자를 가진 파일을 보유
-                b = file_path[1:]  # 맨 앞의 . 제거
-                b1 = b.split('/')  # / 로 string 분할
-                b2 = b1[-1]   #  파일명
-                b3 = b2.split('.')   # 파일명, 확장자 parse
-                if len(b3) > 2:   # 확장자의 개수가 2개 이상 -> 웹쉘 파일로 취급
-                    print(b)
-
+                check_special_character_in_file_extension(file_path)
+                check_multiple_extensions_of_file(file_path)
 
                 if file_extension in webshell_extensions:  # 의심 확장자 포함 시
                     with open(file_path, 'r') as f:
