@@ -42,6 +42,9 @@ def check_multiple_extensions_of_file(file_path):
         return True
     else:
         return False
+    
+
+    # 3. 의심가는 확장자 검사
 
 
 # main 함수
