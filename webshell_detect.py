@@ -31,7 +31,7 @@ def check_special_character_in_file_extension(file_path):
         return False
 
 
-# 2. 여려 확장자를 가진 파일 파악
+# 2. 여러 개의 확장자를 가진 파일 파악
 def check_multiple_extensions_of_file(file_path):
     parsed_path = file_path.split('/')   # 경로 parse
     file_name = parsed_path[-1]  # 파일명
