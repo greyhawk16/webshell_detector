@@ -1,3 +1,4 @@
+# 원본: https://github.com/therealdriss/Webshell-Detect
 # 현재: 확장자, 키워드 기반 탐지
 # 추가기능: 
 # V  1. 파일 확장자 내 특수문자 탐지 -> regex 활용
