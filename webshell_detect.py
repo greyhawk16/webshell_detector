@@ -24,7 +24,7 @@ def detect_webshell(root_dir):
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
 
-        for root, dirs, files in os.walk(root_dir):
+        for root, _, files in os.walk(root_dir):
             for file in files:
                 file_path = os.path.join(root, file)
                 file_extension = os.path.splitext(file_path)[1]
