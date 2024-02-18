@@ -25,7 +25,6 @@ def check_special_character_in_file_extension(file_path):
     extension = file_extension[1:]
 
     if SPECIAL_CHARACTER_DETECTION_PATTERN.search(extension):  # 정규표현식으로 확장자 내 특수문자 파악
-       print(file_path)
        return True
     else:
         return False
@@ -38,17 +37,34 @@ def check_multiple_extensions_of_file(file_path):
     file_name_and_extension = file_name.split('.')   # 파일명, 확장자 parse
 
     if len(file_name_and_extension) != 2:  # 확장자가 2개 이상, 또는 아예 없는 경우
-        print(file_path)
         return True
     else:
         return False
     
 
 # 3. 의심가는 확장자 검사
+def check_suspicious_extensions(file_path):
+    file_extension = os.path.splitext(file_path)[1]
+
+    if file_extension in webshell_extensions:  # 의심 확장자 포함 시
+        with open(file_path, 'r') as f:
+            file_contents = f.read()
+            keywords_found = []
+
+            for keyword in webshell_keywords:   
+                if keyword in file_contents:
+                     keywords_found.append(keyword)
+
+                if keywords_found:
+                    return True
+            else:
+                return False
 
 
 # main 함수
 def detect_webshell(root_dir):
+    suspect_paths = []   # 웹쉘로 분류된 파일 경로 저장
+
     with open('webshell_detection_results.csv', mode='w') as csv_file:
         fieldnames = ['File Path', 'Keywords Found']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
@@ -57,23 +73,22 @@ def detect_webshell(root_dir):
         for root, _, files in os.walk(root_dir):
             for file in files:
                 file_path = os.path.join(root, file)
-                file_extension = os.path.splitext(file_path)[1]
-                
-                check_special_character_in_file_extension(file_path)
-                check_multiple_extensions_of_file(file_path)
+                row = [file_path, False, False, False]  # row[1]: 확장자 속 특수문자 여부, row[2]: 여러 확장자를 가지는지 여부, row[3]: 의심가는 확장자의 파일이 수상한 키워드를 포함하는 지
 
-                if file_extension in webshell_extensions:  # 의심 확장자 포함 시
-                    with open(file_path, 'r') as f:
-                        file_contents = f.read()
-                        keywords_found = []
+                if check_special_character_in_file_extension(file_path):
+                    row[1] = True
+                if check_multiple_extensions_of_file(file_path):
+                    row[2] = True
+                if check_suspicious_extensions(file_path):
+                    row[3] = True
 
-                        for keyword in webshell_keywords:   
-                            if keyword in file_contents:
-                                keywords_found.append(keyword)
+                for i in range(1, 4):
+                    if row[i]:
+                        suspect_paths.append(row)
+                        break
 
-                        if keywords_found:
-                            writer.writerow({'File Path': file_path, 'Keywords Found': keywords_found})
-                            print('File Path', file_path, 'Keywords Found', keywords_found)
+        for row in suspect_paths:
+            print(row)
 
 
 detect_webshell('./uploads') # specify the root directory of the web server
