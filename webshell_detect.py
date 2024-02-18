@@ -59,36 +59,41 @@ def check_suspicious_extensions(file_path):
                     return True
             else:
                 return False
+            
+
+# 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
+def write_csv(suspect_paths):
+    with open('webshell_detection_results.csv', mode='w') as csv_file:
+        fieldnames = ['File Path', 'Keywords Found']
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+    return True
 
 
 # main 함수
 def detect_webshell(root_dir):
     suspect_paths = []   # 웹쉘로 분류된 파일 경로 저장
 
-    with open('webshell_detection_results.csv', mode='w') as csv_file:
-        fieldnames = ['File Path', 'Keywords Found']
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-        writer.writeheader()
 
-        for root, _, files in os.walk(root_dir):
-            for file in files:
-                file_path = os.path.join(root, file)
-                row = [file_path, False, False, False]  # row[1]: 확장자 속 특수문자 여부, row[2]: 여러 확장자를 가지는지 여부, row[3]: 의심가는 확장자의 파일이 수상한 키워드를 포함하는 지
+    for root, _, files in os.walk(root_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+            row = [file_path, False, False, False]  # row[1]: 확장자 속 특수문자 여부, row[2]: 여러 확장자를 가지는지 여부, row[3]: 의심가는 확장자의 파일이 수상한 키워드를 포함하는 지
 
-                if check_special_character_in_file_extension(file_path):
-                    row[1] = True
-                if check_multiple_extensions_of_file(file_path):
-                    row[2] = True
-                if check_suspicious_extensions(file_path):
-                    row[3] = True
+            if check_special_character_in_file_extension(file_path):
+                row[1] = True
+            if check_multiple_extensions_of_file(file_path):
+                row[2] = True
+            if check_suspicious_extensions(file_path):
+                row[3] = True
 
-                for i in range(1, 4):
-                    if row[i]:
-                        suspect_paths.append(row)
-                        break
+            for i in range(1, 4):
+                if row[i]:
+                    suspect_paths.append(row)
+                    break
 
-        for row in suspect_paths:
-            print(row)
+    for row in suspect_paths:
+        print(row)
 
 
 detect_webshell('./uploads') # specify the root directory of the web server
