@@ -12,6 +12,8 @@
 import os
 import csv
 import re
+import datetime
+import platform
 
 
 webshell_extensions = ['.php', '.asp', '.jsp'] # add any other extensions commonly used for webshells
@@ -32,8 +34,7 @@ def check_special_character_in_file_extension(file_path):
 
 # 2. 여러 개의 확장자를 가진 파일 파악
 def check_multiple_extensions_of_file(file_path):
-    parsed_path = file_path.split('/')   # 경로 parse
-    file_name = parsed_path[-1]  # 파일명
+    file_name = file_path.split('/')[-1]   # 파일명
     file_name_and_extension = file_name.split('.')   # 파일명, 확장자 parse
 
     if len(file_name_and_extension) != 2:  # 확장자가 2개 이상, 또는 아예 없는 경우
@@ -64,9 +65,23 @@ def check_suspicious_extensions(file_path):
 # 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
 def write_csv(suspect_paths):
     with open('webshell_detection_results.csv', mode='w') as csv_file:
-        fieldnames = ['File Path', 'Keywords Found']
+        fieldnames = ['File Name', 'File Path', 'Created At', 'Special character in extension', 'Multiple file extensions', 'Suspicious keyword present']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
+
+        for row in suspect_paths:
+            file_name = row[0].split('/')[-1]   # 경로 parse
+            abs_path = os.path.abspath(row[0])
+            
+            # OS 별 파일 생성일시를 파악하는 방법에 차이 존재
+            if platform.system == 'Windows':
+                created_at = os.path.getctime(abs_path)
+            else:
+                created_at = os.stat(abs_path).st_birthtime
+
+            temp = [file_name, created_at, abs_path, row[1], row[2], row[3]]
+            print(temp)
+
     return True
 
 
@@ -91,9 +106,8 @@ def detect_webshell(root_dir):
                 if row[i]:
                     suspect_paths.append(row)
                     break
-
-    for row in suspect_paths:
-        print(row)
+    
+    write_csv(suspect_paths)
 
 
 detect_webshell('./uploads') # specify the root directory of the web server
