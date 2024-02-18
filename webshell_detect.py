@@ -65,8 +65,8 @@ def check_suspicious_extensions(file_path):
 # 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
 def write_csv(suspect_paths):
     with open('webshell_detection_results.csv', mode='w') as csv_file:
-        fieldnames = ['File Name', 'File Path', 'Created At', 'Special character in extension', 'Multiple file extensions', 'Suspicious keyword present']
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        field_names = ['File Name', 'File Path', 'Created At', 'Special character in extension', 'Multiple file extensions', 'Suspicious keyword present']
+        writer = csv.DictWriter(csv_file, fieldnames=field_names)
         writer.writeheader()
 
         for row in suspect_paths:
@@ -79,7 +79,23 @@ def write_csv(suspect_paths):
             else:
                 created_at = os.stat(abs_path).st_birthtime
 
-            temp = [file_name, created_at, abs_path, row[1], row[2], row[3]]
+            temp = {
+                'File Name': file_name,
+                'File Path': abs_path,
+                'Created At': created_at,
+                'Special character in extension': 'X',
+                'Multiple file extensions': 'X',
+                'Suspicious keyword present': 'X'
+            }
+
+            if row[1]:
+                temp['Special character in extension'] = 'O'
+            if row[2]:
+                temp['Multiple file extensions'] = 'O'
+            if row[3]:
+                temp['Suspicious keyword present'] = 'O'
+            
+            writer.writerow(temp)
             print(temp)
 
     return True
