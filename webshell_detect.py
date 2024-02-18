@@ -29,10 +29,12 @@ def detect_webshell(root_dir):
                 file_path = os.path.join(root, file)
                 file_extension = os.path.splitext(file_path)[1]
                 
+                # 1. 정규표현식을 이용하여 확장자에 특수문자가 포함된 파일을 탐지
                 a = file_extension[1:]  # 확장자 앞 . 제거
-                if find_special_character.search(a):  # 정규표현식 기반, 확장자 내 특수문자 파악
+                if find_special_character.search(a):  # 정규표현식으로 확장자 내 특수문자 파악
                     print(a)
                 
+                # 2. 중복되는 확장자를 가진 파일을 보유
                 b = file_path[1:]  # 맨 앞의 . 제거
                 b1 = b.split('/')  # / 로 string 분할
                 b2 = b1[-1]   #  파일명
