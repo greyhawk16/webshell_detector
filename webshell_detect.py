@@ -105,7 +105,6 @@ def write_csv(suspect_paths):
 def detect_webshell(root_dir):
     suspect_paths = []   # 웹쉘로 분류된 파일 경로 저장
 
-
     for root, _, files in os.walk(root_dir):
         for file in files:
             file_path = os.path.join(root, file)
