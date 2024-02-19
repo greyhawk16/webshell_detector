@@ -21,7 +21,7 @@ target_directory = './uploads'
 
 # 1. 확장자 속 특수문자 파악
 def check_special_character_in_file_extension(file_path):
-    SPECIAL_CHARACTER_DETECTION_PATTERN = re.compile(r'[^A-Za-z]')  # 파일 확장자는 알파벳 대소문자만 허용
+    SPECIAL_CHARACTER_DETECTION_PATTERN = re.compile(r'[^A-Za-z]')  # 알파벳 대소문자 외의 문자가 존재하는 지 파악
 
     file_extension = os.path.splitext(file_path)[1]
     extension = file_extension[1:]
