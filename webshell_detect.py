@@ -1,28 +1,28 @@
-# 원본: https://github.com/therealdriss/Webshell-Detect
-# 현재: 확장자, 키워드 기반 탐지
-# 추가기능: 
-# V  1. 파일 확장자 내 특수문자 탐지 -> regex 활용
-# V  2. csv 기록 시 파일의 생성일시 기록    
-# V  3. 웹쉘 키워드 확충
-# V  4. csv에 기록하는 내용 변경
+"""
+    원본: https://github.com/therealdriss/Webshell-Detect
 
-# 추후 계획: 도커화
+    추가기능: 
+    - regex를 활용하여 파일 확장자 내 특수문자 탐지 
+    - 여러 개의 확장자를 가지는지 파악
+    - csv에 탐지된 파일 이름, 절대경로, 생성일시, 탐지 사유 기록
+
+    추후 계획: 도커화
+"""
 
 
 import os
 import csv
 import re
-import datetime
 import platform
 
-
-webshell_extensions = ['.php', '.asp', '.jsp'] # add any other extensions commonly used for webshells
-webshell_keywords = ['system', 'shell_exec', 'eval'] # add any other keywords commonly used in webshells
-SPECIAL_CHARACTER_DETECTION_PATTERN = re.compile(r'[^A-Za-z]')   # 파일 확장자는 알파벳 대소문자만 허용
+  
+target_directory = './uploads'
 
 
 # 1. 확장자 속 특수문자 파악
 def check_special_character_in_file_extension(file_path):
+    SPECIAL_CHARACTER_DETECTION_PATTERN = re.compile(r'[^A-Za-z]')  # 파일 확장자는 알파벳 대소문자만 허용
+
     file_extension = os.path.splitext(file_path)[1]
     extension = file_extension[1:]
 
@@ -45,6 +45,8 @@ def check_multiple_extensions_of_file(file_path):
 
 # 3. 의심가는 확장자 검사
 def check_suspicious_extensions(file_path):
+    webshell_extensions = ['.php', '.asp', '.jsp'] # add any other extensions commonly used for webshells
+    webshell_keywords = ['system', 'shell_exec', 'eval'] # add any other keywords commonly used in webshells
     file_extension = os.path.splitext(file_path)[1]
 
     if file_extension in webshell_extensions:  # 의심 확장자 포함 시
@@ -56,8 +58,8 @@ def check_suspicious_extensions(file_path):
                 if keyword in file_contents:
                      keywords_found.append(keyword)
 
-                if keywords_found:
-                    return True
+                if keywords_found:  # 의심가는 확장자의 파일 중, 웹쉘로 판단될 키워드 포함 시
+                    return True    
             else:
                 return False
             
@@ -70,8 +72,8 @@ def write_csv(suspect_paths):
         writer.writeheader()
 
         for row in suspect_paths:
-            file_name = row[0].split('/')[-1]   # 경로 parse
-            abs_path = os.path.abspath(row[0])
+            file_name = row[0].split('/')[-1]   # 파일 이름
+            abs_path = os.path.abspath(row[0])  # file_path를 절대 경로로 변환
             
             # OS 별 파일 생성일시를 파악하는 방법에 차이 존재
             if platform.system == 'Windows':
@@ -86,19 +88,17 @@ def write_csv(suspect_paths):
                 'Special character in extension': 'X',
                 'Multiple file extensions': 'X',
                 'Suspicious keyword present': 'X'
-            }
+            }   # 임시 template, CSV에 쓰기 작업 시 필요
 
-            if row[1]:
+            if row[1]:  # 확장자에 특수문자가 들어있는 경우
                 temp['Special character in extension'] = 'O'
-            if row[2]:
+            if row[2]:  # 여러 개의 확장자를 가지는 경우
                 temp['Multiple file extensions'] = 'O'
-            if row[3]:
+            if row[3]:  # 의심가는 확장자의 파일이고, 특정 키워드가 들어있는 경우
                 temp['Suspicious keyword present'] = 'O'
             
             writer.writerow(temp)
             print(temp)
-
-    return True
 
 
 # main 함수
@@ -108,21 +108,21 @@ def detect_webshell(root_dir):
     for root, _, files in os.walk(root_dir):
         for file in files:
             file_path = os.path.join(root, file)
-            row = [file_path, False, False, False]  # row[1]: 확장자 속 특수문자 여부, row[2]: 여러 확장자를 가지는지 여부, row[3]: 의심가는 확장자의 파일이 수상한 키워드를 포함하는 지
 
-            if check_special_character_in_file_extension(file_path):
+            row = [file_path, False, False, False]  # 현재 보고있는 파일의 이름, 웹쉘로 판단한 근거를 저장
+            # row[1]: 확장자 속 특수문자 여부 기록, row[2]: 여러 확장자를 가지는지 기록, row[3]: 의심가는 확장자의 파일이 수상한 키워드를 포함하는 지 기록
+
+            if check_special_character_in_file_extension(file_path):  # 확장자 속 특수문자 존재 여부 검증
                 row[1] = True
-            if check_multiple_extensions_of_file(file_path):
+            if check_multiple_extensions_of_file(file_path):  # 여러 개의 확장자를 가지는 지 검증
                 row[2] = True
-            if check_suspicious_extensions(file_path):
+            if check_suspicious_extensions(file_path):  # 의심가는 확장자를 가진 파일 중, 웹쉘로 판단될 만한 키워드를 포함하고 있는 지 검증
                 row[3] = True
 
-            for i in range(1, 4):
-                if row[i]:
-                    suspect_paths.append(row)
-                    break
+            if row[1] or row[2] or row[3]:  # 위의 3개 기준 중 하나 이상 해당하는 경우 
+                suspect_paths.append(row)   # 웹쉘로 판단, 기록
     
     write_csv(suspect_paths)
 
 
-detect_webshell('./uploads') # specify the root directory of the web server
+detect_webshell(target_directory) # specify the root directory of the web server
