@@ -7,6 +7,8 @@
     - csv에 탐지된 파일 이름, 절대경로, 생성일시, 탐지 사유 기록
 
     추후 계획: 도커화
+
+    웹쉘 해시값 리스트: https://github.com/greyhawk16/sfiles_yara/blob/master/hacktools/web_shells.yara
 """
 
 
@@ -14,9 +16,15 @@ import os
 import csv
 import re
 import platform
+import requests
+
+from dotenv import load_dotenv
 
   
 target_directory = './uploads'
+
+
+load_dotenv()
 
 
 # 1. 확장자 속 특수문자 파악
@@ -99,6 +107,34 @@ def write_csv(suspect_paths):
             
             writer.writerow(temp)
             print(temp)
+
+
+def check_stored_hash(file_path):
+    # 보유한 해시값 라이브러리에서, 주어진 파일의 해시값이 존재하는 지 판별
+    return True
+
+
+def check_hash_via_virus_total(file_path):
+    # virus total 에서 파일해시값 업로드 후 웹쉘인지 판별
+    file_hash = 0 # file_path 에 있는 파일의 SHA256 해시값
+
+    url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
+    api_key = os.getenv("VIRUSTOTAL_API_KEY")
+
+    headers = {
+        "accept": "application/json",
+        "x-apikey": api_key
+    }
+
+    response = requests.get(url, headers=headers)
+    print(response.text)
+
+    return True 
+
+
+def check_file_via_virus_total(file_path):
+    # 주어진 파일이 virustotal 에서 웹쉘로 분류되는 지 판별
+    return True
 
 
 # main 함수
