@@ -9,6 +9,10 @@
     추후 계획: 도커화
 
     웹쉘 해시값 리스트: https://github.com/greyhawk16/sfiles_yara/blob/master/hacktools/web_shells.yara
+
+    사용예정 API
+    - VirusTotalAPI
+    - MalwareBazaar(https://bazaar.abuse.ch/api/)
 """
 
 
