@@ -115,6 +115,7 @@ def write_csv(suspect_paths):
 
 def check_stored_hash(file_path):
     # 보유한 해시값 라이브러리에서, 주어진 파일의 해시값이 존재하는 지 판별
+    HASH_LIST = set()   # 시간복잡도 향상을 위해 list 대신 set 활용
     return True
 
 
