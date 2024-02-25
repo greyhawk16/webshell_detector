@@ -119,7 +119,7 @@ def check_stored_hash(file_path):
 
 
 def check_hash_via_virus_total(file_path):
-    # virus total 에서 파일해시값 업로드 후 웹쉘인지 판별
+    # virustotal에 파일해시값 업로드 후 웹쉘인지 판별
     file_hash = 0 # file_path 에 있는 파일의 SHA256 해시값
 
     url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
@@ -134,6 +134,11 @@ def check_hash_via_virus_total(file_path):
     print(response.text)
 
     return True 
+
+
+def check_file_hash_via_otx_alienvault(file_path):
+    # otx.alienvault에 파일해시값 업로드 후 웹쉘인지 판별
+    return True
 
 
 def check_file_via_virus_total(file_path):
