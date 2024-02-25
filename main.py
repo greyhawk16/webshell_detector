@@ -21,6 +21,8 @@ import csv
 import re
 import platform
 import requests
+import json
+import hashlib
 
 from dotenv import load_dotenv
 
@@ -76,6 +78,67 @@ def check_suspicious_extensions(file_path):
                 return False
             
 
+def check_stored_hash(file_path):
+    # 현재 보유한 웹쉘의 SHA256 해시값 중, 주어진 파일의 해시값이 존재하는 지 판별
+    HASH_LIST = set({
+        'f9fea823076f5a68fffea0eedc761e258a463b411a7364cf1abb5ab0f5f82024',
+        'f318db10e2536fdab7c1799d90113d3f837325dc896713135ed5d6f30f035dab',
+        'e9b35b391d248775771d0690adc9eb63c70892cc3c09526101ec97dbe79232d7',
+    })  # 시간복잡도 향상을 위해 list 대신 set 활용
+
+    f = open(file_path, 'rb')
+    data = f.read()
+    f.close()
+    file_hash = hashlib.sha256(data).hexdigest() # file_path 에 있는 파일의 SHA256 해시값
+
+    if file_hash in HASH_LIST:
+        return True
+    else:
+        return False
+
+
+def check_hash_via_virus_total(file_path):
+    # virustotal에 파일해시값 업로드 후 웹쉘인지 판별
+    f = open(file_path, 'rb')
+    data = f.read()
+    f.close()
+    file_hash = hashlib.sha256(data).hexdigest # file_path 에 있는 파일의 SHA256 해시값
+
+    url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
+    api_key = os.getenv("VIRUSTOTAL_API_KEY")
+
+    headers = {
+        "accept": "application/json",
+        "x-apikey": api_key
+    }
+
+    response = requests.get(url, headers=headers)
+    resp_content = json.loads(response.text)
+    
+    if response.status_code == 200:
+        res = resp_content['data']['attributes']['crowdsourced_yara_results']
+        
+        for r in res:
+            tmp = r['rule_name']   # rule_name 순회
+            if 'webshell' in tmp:   # 기준에 'webshell' 단어 포함 시 -> 웹쉘로 판단
+                return 'webshell'   
+            
+        return 'other'   # 웹쉘이 아닌, 다른 악성코드인 경우 'other' 반환
+    
+    else:
+        return False   # 404 응답을 받은 경우
+
+
+def check_file_hash_via_otx_alienvault(file_path):
+    # otx.alienvault에 파일해시값 업로드 후 웹쉘인지 판별
+    return True
+
+
+def check_file_via_virus_total(file_path):
+    # 주어진 파일이 virustotal 에서 웹쉘로 분류되는 지 판별
+    return True
+
+
 # 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
 def write_csv(suspect_paths):
     with open('webshell_detection_results.csv', mode='w') as csv_file:
@@ -111,40 +174,6 @@ def write_csv(suspect_paths):
             
             writer.writerow(temp)
             print(temp)
-
-
-def check_stored_hash(file_path):
-    # 보유한 해시값 라이브러리에서, 주어진 파일의 해시값이 존재하는 지 판별
-    HASH_LIST = set()   # 시간복잡도 향상을 위해 list 대신 set 활용
-    return True
-
-
-def check_hash_via_virus_total(file_path):
-    # virustotal에 파일해시값 업로드 후 웹쉘인지 판별
-    file_hash = 0 # file_path 에 있는 파일의 SHA256 해시값
-
-    url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
-    api_key = os.getenv("VIRUSTOTAL_API_KEY")
-
-    headers = {
-        "accept": "application/json",
-        "x-apikey": api_key
-    }
-
-    response = requests.get(url, headers=headers)
-    print(response.text)
-
-    return True 
-
-
-def check_file_hash_via_otx_alienvault(file_path):
-    # otx.alienvault에 파일해시값 업로드 후 웹쉘인지 판별
-    return True
-
-
-def check_file_via_virus_total(file_path):
-    # 주어진 파일이 virustotal 에서 웹쉘로 분류되는 지 판별
-    return True
 
 
 # main 함수
