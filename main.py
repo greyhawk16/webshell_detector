@@ -26,11 +26,16 @@ import hashlib
 
 from dotenv import load_dotenv
 
-  
 target_directory = './uploads'
-
-
 load_dotenv()
+
+
+class subject:   # 검사 대상 파일의 정보 저장
+    def __init__(self) -> None:
+        self.file_path = './'   # 파일 경로
+        self.special_character_in_file_extension = False  # 확장자 속 특수문자 포함 여부
+        self.multiple_extensions = False  # 여러 확장자를 가지는 지 여부
+        self.suspicious_extensions_with_keywords = False  # 의심가는 확장자이고, 웹쉘로 판단할 수 있는 키워드를 포함하는 지
 
 
 # 1. 확장자 속 특수문자 파악
@@ -147,8 +152,9 @@ def write_csv(suspect_paths):
         writer.writeheader()
 
         for row in suspect_paths:
-            file_name = row[0].split('/')[-1]   # 파일 이름
-            abs_path = os.path.abspath(row[0])  # file_path를 절대 경로로 변환
+            tmp = row.file_path   # 임시 변수
+            file_name = tmp.split('/')[-1]   # 파일 이름
+            abs_path = os.path.abspath(tmp)  # file_path를 절대 경로로 변환
             
             # OS 별 파일 생성일시를 파악하는 방법에 차이 존재
             if platform.system == 'Windows':
@@ -160,20 +166,13 @@ def write_csv(suspect_paths):
                 'File Name': file_name,
                 'File Path': abs_path,
                 'Created At': created_at,
-                'Special character in extension': 'X',
-                'Multiple file extensions': 'X',
-                'Suspicious keyword present': 'X'
-            }   # 임시 template, CSV에 쓰기 작업 시 필요
-
-            if row[1]:  # 확장자에 특수문자가 들어있는 경우
-                temp['Special character in extension'] = 'O'
-            if row[2]:  # 여러 개의 확장자를 가지는 경우
-                temp['Multiple file extensions'] = 'O'
-            if row[3]:  # 의심가는 확장자의 파일이고, 특정 키워드가 들어있는 경우
-                temp['Suspicious keyword present'] = 'O'
+                'Special character in extension': row.special_character_in_file_extension,
+                'Multiple file extensions': row.multiple_extensions,
+                'Suspicious keyword present': row.suspicious_extensions_with_keywords
+            }   # CSV에 적을 행
             
             writer.writerow(temp)
-            print(temp)
+            # print(temp)
 
 
 # main 함수
@@ -184,17 +183,21 @@ def detect_webshell(root_dir):
         for file in files:
             file_path = os.path.join(root, file)
 
-            row = [file_path, False, False, False]  # 현재 보고있는 파일의 이름, 웹쉘로 판단한 근거를 저장
-            # row[1]: 확장자 속 특수문자 여부 기록, row[2]: 여러 확장자를 가지는지 기록, row[3]: 의심가는 확장자의 파일이 수상한 키워드를 포함하는 지 기록
+            row = subject()  # 현재 보고있는 파일의 이름, 웹쉘로 판단한 근거를 저장
+            row.file_path = file_path
 
             if check_special_character_in_file_extension(file_path):  # 확장자 속 특수문자 존재 여부 검증
-                row[1] = True
+                row.special_character_in_file_extension = True
             if check_multiple_extensions_of_file(file_path):  # 여러 개의 확장자를 가지는 지 검증
-                row[2] = True
+                row.multiple_extensions = True
             if check_suspicious_extensions(file_path):  # 의심가는 확장자를 가진 파일 중, 웹쉘로 판단될 만한 키워드를 포함하고 있는 지 검증
-                row[3] = True
+                row.suspicious_extensions_with_keywords = True
 
-            if row[1] or row[2] or row[3]:  # 위의 3개 기준 중 하나 이상 해당하는 경우 
+            if (
+                row.special_character_in_file_extension or
+                row.multiple_extensions or
+                row.suspicious_extensions_with_keywords
+            ):  # 위의 3개 기준 중 하나 이상 해당하는 경우 
                 suspect_paths.append(row)   # 웹쉘로 판단, 기록
     
     write_csv(suspect_paths)
