@@ -107,7 +107,7 @@ def check_hash_via_virus_total(file_path):
     f = open(file_path, 'rb')
     data = f.read()
     f.close()
-    file_hash = hashlib.sha256(data).hexdigest # file_path 에 있는 파일의 SHA256 해시값
+    file_hash = hashlib.sha256(data).hexdigest() # file_path 에 있는 파일의 SHA256 해시값
 
     url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
     api_key = os.getenv("VIRUSTOTAL_API_KEY")
@@ -132,6 +132,34 @@ def check_hash_via_virus_total(file_path):
     
     else:
         return False   # 404 응답을 받은 경우
+
+
+def check_hash_via_malware_bazaar(file_path):
+    f = open(file_path, 'rb')
+    data = f.read()
+    f.close()
+    file_hash = hashlib.sha256(data).hexdigest() # file_path 에 있는 파일의 SHA256 해시값
+
+    data = {'query': 'get_info', 'hash': file_hash}
+    url = "https://mb-api.abuse.ch/api/v1/"
+    response = requests.post(url, data=data)
+
+    if response.json()["query_status"] != 'hash_not_found':
+        response_json = response.json()["data"][0]
+        print(type(response_json))
+        # with open('./malware_200_ex.json', 'w') as output_file:
+        #     json.dump(response_json, output_file)
+
+        tag_list = response_json['tags']
+        print(tag_list)
+        tag_list = set(tag_list)  # set 으로 변환
+
+        if 'webshell' in tag_list:
+            return 'webshell'
+        else:
+            return 'others'
+    else:
+        return False
 
 
 def check_file_hash_via_otx_alienvault(file_path):
