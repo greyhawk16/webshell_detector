@@ -26,7 +26,7 @@ import hashlib
 
 from dotenv import load_dotenv
 
-target_directory = './uploads'
+target_directory = input('Enter target directory: ')
 load_dotenv()
 
 
@@ -216,6 +216,7 @@ def detect_webshell(root_dir):
                 suspect_paths.append(row)   # 웹쉘로 판단, 기록
     
     write_csv(suspect_paths)
+    print('done')
 
 
 detect_webshell(target_directory) # specify the root directory of the web server
