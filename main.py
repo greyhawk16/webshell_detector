@@ -30,12 +30,12 @@ target_directory = './uploads'
 load_dotenv()
 
 
-class subject:   # 검사 대상 파일의 정보 저장
+class subject:                                               # 검사한 파일의 정보를 저장하는 class
     def __init__(self) -> None:
-        self.file_path = './'   # 파일 경로
-        self.special_character_in_file_extension = False  # 확장자 속 특수문자 포함 여부
-        self.multiple_extensions = False  # 여러 확장자를 가지는 지 여부
-        self.suspicious_extensions_with_keywords = False  # 의심가는 확장자이고, 웹쉘로 판단할 수 있는 키워드를 포함하는 지
+        self.file_path = './'                                # 파일 경로
+        self.special_character_in_file_extension = False     # 확장자 속 특수문자 포함 여부
+        self.multiple_extensions = False                     # 여러 확장자를 가지는 지 여부
+        self.suspicious_extensions_with_keywords = False     # 의심가는 확장자이고, 웹쉘로 판단할 수 있는 키워드를 포함하는 지
 
 
 # 1. 확장자 속 특수문자 파악
@@ -77,37 +77,37 @@ def check_suspicious_extensions(file_path):
                 if keyword in file_contents:
                      keywords_found.append(keyword)
 
-                if keywords_found:  # 의심가는 확장자의 파일 중, 웹쉘로 판단될 키워드 포함 시
-                    return True    
+                if keywords_found:  # 의심가는 확장자의 파일 중, 웹쉘로 판단될 키워드 포함 시 -> 웹쉘로 판단
+                    return True     
             else:
                 return False
             
 
+# 4. 현재 보유한 웹쉘의 SHA256 해시값 중, 주어진 파일의 해시값이 존재하는 지 판별
 def check_stored_hash(file_path):
-    # 현재 보유한 웹쉘의 SHA256 해시값 중, 주어진 파일의 해시값이 존재하는 지 판별
     HASH_LIST = set({
         'f9fea823076f5a68fffea0eedc761e258a463b411a7364cf1abb5ab0f5f82024',
         'f318db10e2536fdab7c1799d90113d3f837325dc896713135ed5d6f30f035dab',
         'e9b35b391d248775771d0690adc9eb63c70892cc3c09526101ec97dbe79232d7',
-    })  # 시간복잡도 향상을 위해 list 대신 set 활용
+    })  # 알려진 웹쉘들의 해시값을 모아둔 set
 
     f = open(file_path, 'rb')
     data = f.read()
     f.close()
-    file_hash = hashlib.sha256(data).hexdigest() # file_path 에 있는 파일의 SHA256 해시값
+    file_hash = hashlib.sha256(data).hexdigest() 
 
-    if file_hash in HASH_LIST:
-        return True
+    if file_hash in HASH_LIST:  # 해시값이 웹쉘의 해시값 중 하나와 같다면 -> 웹쉘로 판단
+        return True             
     else:
         return False
 
 
+# 5. virustotal에 파일해시값 업로드 후 웹쉘인지 판별
 def check_hash_via_virus_total(file_path):
-    # virustotal에 파일해시값 업로드 후 웹쉘인지 판별
     f = open(file_path, 'rb')
     data = f.read()
     f.close()
-    file_hash = hashlib.sha256(data).hexdigest() # file_path 에 있는 파일의 SHA256 해시값
+    file_hash = hashlib.sha256(data).hexdigest()                             
 
     url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
     api_key = os.getenv("VIRUSTOTAL_API_KEY")
@@ -118,58 +118,46 @@ def check_hash_via_virus_total(file_path):
     }
 
     response = requests.get(url, headers=headers)
-    resp_content = json.loads(response.text)
+    resp_content = json.loads(response.text)  
     
-    if response.status_code == 200:
-        res = resp_content['data']['attributes']['crowdsourced_yara_results']
+    if response.status_code == 200:                                               # file_hash가 virusotal에 등록된 경우
+        res = resp_content['data']['attributes']['crowdsourced_yara_results']     # 악성코드에 해당되는 기준
         
-        for r in res:
-            tmp = r['rule_name']   # rule_name 순회
-            if 'webshell' in tmp:   # 기준에 'webshell' 단어 포함 시 -> 웹쉘로 판단
+        for r in res:                    # 해당되는 기준 순회
+            tmp = r['rule_name']         # 기준 이름
+            if 'webshell' in tmp:        # 기준 이름에 'webshell' 단어 포함 시 -> 웹쉘로 판단
                 return 'webshell'   
             
-        return 'other'   # 웹쉘이 아닌, 다른 악성코드인 경우 'other' 반환
+        return 'other'                   # 웹쉘이 아닌 다른 악성코드인 경우, 'other' 반환
     
     else:
-        return False   # 404 응답을 받은 경우
+        return False                     # 404 응답을 받은 경우 -> 악성코드로 판단하지 않음
 
 
+# 6. 파일 해시값이 MalwareBazaar에 악성코드로 분류되었는지 판단
 def check_hash_via_malware_bazaar(file_path):
     f = open(file_path, 'rb')
     data = f.read()
     f.close()
-    file_hash = hashlib.sha256(data).hexdigest() # file_path 에 있는 파일의 SHA256 해시값
+    file_hash = hashlib.sha256(data).hexdigest()              # file_path 에 있는 파일의 SHA256 해시값
 
     data = {'query': 'get_info', 'hash': file_hash}
     url = "https://mb-api.abuse.ch/api/v1/"
     response = requests.post(url, data=data)
 
-    if response.json()["query_status"] != 'hash_not_found':
+    if response.json()["query_status"] != 'hash_not_found':   # 악성코드의 해시값과 일치할 경우
         response_json = response.json()["data"][0]
-        print(type(response_json))
-        # with open('./malware_200_ex.json', 'w') as output_file:
-        #     json.dump(response_json, output_file)
 
-        tag_list = response_json['tags']
+        tag_list = response_json['tags']     # 악성코드의 태그 정보
         print(tag_list)
-        tag_list = set(tag_list)  # set 으로 변환
+        tag_list = set(tag_list)             # 시간복잡도 향상을 위해, set으로 변환
 
-        if 'webshell' in tag_list:
-            return 'webshell'
+        if 'webshell' in tag_list:           # 해당 악성코드의 대크에 'webshell'이 있다면 
+            return 'webshell'                # 웹쉘로 판단
         else:
-            return 'others'
+            return 'others'                  # 웹쉘이 아닌 다른 악성코드로 판단
     else:
-        return False
-
-
-def check_file_hash_via_otx_alienvault(file_path):
-    # otx.alienvault에 파일해시값 업로드 후 웹쉘인지 판별
-    return True
-
-
-def check_file_via_virus_total(file_path):
-    # 주어진 파일이 virustotal 에서 웹쉘로 분류되는 지 판별
-    return True
+        return False                         # 악성코드가 아닌 파일로 판단
 
 
 # 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
@@ -180,7 +168,7 @@ def write_csv(suspect_paths):
         writer.writeheader()
 
         for row in suspect_paths:
-            tmp = row.file_path   # 임시 변수
+            tmp = row.file_path              
             file_name = tmp.split('/')[-1]   # 파일 이름
             abs_path = os.path.abspath(tmp)  # file_path를 절대 경로로 변환
             
@@ -200,7 +188,6 @@ def write_csv(suspect_paths):
             }   # CSV에 적을 행
             
             writer.writerow(temp)
-            # print(temp)
 
 
 # main 함수
