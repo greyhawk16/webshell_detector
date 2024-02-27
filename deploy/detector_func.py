@@ -4,6 +4,8 @@
     추가기능: 
     - regex를 활용하여 파일 확장자 내 특수문자 탐지 
     - 여러 개의 확장자를 가지는지 파악
+    - 보유중인 웹쉘의 해시값과, 파일의 해시값 비교
+    - 파일의 해시값이 VirusTotal, MalwareBazaar에서 악성코드로 분류되는 지 파악
     - csv에 탐지된 파일 이름, 절대경로, 생성일시, 탐지 사유 기록
 
     추후 계획: 도커화
@@ -26,7 +28,7 @@ import hashlib
 
 from dotenv import load_dotenv
 
-target_directory = input('Enter target directory: ')
+# target_directory = input('Enter target directory: ')
 load_dotenv()
 
 
@@ -219,4 +221,4 @@ def detect_webshell(root_dir):
     print('done')
 
 
-detect_webshell(target_directory) # specify the root directory of the web server
+# detect_webshell(target_directory) # specify the root directory of the web server

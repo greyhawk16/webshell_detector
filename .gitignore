@@ -2,3 +2,5 @@
 .DS_Store
 .ENV
 *.json
+/시험용_파일_모음
+*/__pycache__
