@@ -3,7 +3,7 @@ import os
 
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
-
+from detection_functions import *
 
 
 app = Flask(__name__)
