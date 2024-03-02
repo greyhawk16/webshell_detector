@@ -11,7 +11,7 @@ app.config['UPLOAD_FOLDER'] = "uploads/"
 
 
 # 참고자료: https://flask.palletsprojects.com/en/2.3.x/patterns/fileuploads/
-@app.route('/fileUpload', methods = ['GET', 'POST'])
+@app.route('/file_upload', methods = ['GET', 'POST'])
 def upload_file():    # 시작 화면, 파일 업로드
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -25,7 +25,7 @@ def upload_file():    # 시작 화면, 파일 업로드
                 file_name = file.filename
                 file.save(app.config['UPLOAD_FOLDER'] + file_name)
                 # 파일 이름에 특수문자 포함 시, 서비스 거부
-                
+
             return render_template("upload_result.html", name=files)
     else:
         return render_template("index.html")
