@@ -44,6 +44,12 @@ def display_analysis_result():
     with open(result_file) as file:
         reader = csv.reader(file)
         return render_template('analysis_result.html', csv=reader)
+    
+
+@app.route("/download_result", methods = ['GET'])
+def download_analysis_result():
+    # 분석결과를 담은 CSV 파일을 다운로드
+    return 'download CSV'
 
 
 @app.route('/')
