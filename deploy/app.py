@@ -25,14 +25,20 @@ def upload_file():    # 시작 화면, 파일 업로드
             return redirect(request.url)
         if f:
             file_name = f.filename
+            # 파일 이름에 특수문자 포함 시, 서비스 거부
             f.save(app.config['UPLOAD_FOLDER'] + file_name)
             return render_template("upload_result.html", name=file_name)
     else:
         return render_template("index.html")
         
 
+@app.route('/uploaded_file_list', methods = ['GET'])
+def uploaded_files_dashboard():
+    files = os.listdir("./uploads")
+    return render_template('uploaded_file_list.html', files=files)
 
-@app.route('/analysis_result', methods = ['GET'])
+
+@app.route("/analysis_result", methods = ['GET'])
 def display_analysis_result():
     return render_template('analysis_result.html')
 
