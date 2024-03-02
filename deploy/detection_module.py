@@ -38,6 +38,9 @@ class subject:                                               # 검사한 파일�
         self.special_character_in_file_extension = False     # 확장자 속 특수문자 포함 여부
         self.multiple_extensions = False                     # 여러 확장자를 가지는 지 여부
         self.suspicious_extensions_with_keywords = False     # 의심가는 확장자이고, 웹쉘로 판단할 수 있는 키워드를 포함하는 지
+        self.match_webshell_hash = False                   # 보유한 웹쉘 해시값 중 한 개와 일치하는 지
+        self.found_at_virus_total = False                    # VirusTotal에 웹쉘 또는 기타 악성코드로 등록되어 있는 지
+        self.found_at_malware_bazaar = False                 # MalwareBazaar 에 웹쉘 또는 그 외 악성코드로 등록되어 있는 지  
 
 
 # 1. 확장자 속 특수문자 파악
@@ -122,15 +125,16 @@ def check_hash_via_virus_total(file_path):
     response = requests.get(url, headers=headers)
     resp_content = json.loads(response.text)  
     
-    if response.status_code == 200:                                               # file_hash가 virusotal에 등록된 경우
-        res = resp_content['data']['attributes']['crowdsourced_yara_results']     # 악성코드에 해당되는 기준
-        
-        for r in res:                    # 해당되는 기준 순회
-            tmp = r['rule_name']         # 기준 이름
-            if 'webshell' in tmp:        # 기준 이름에 'webshell' 단어 포함 시 -> 웹쉘로 판단
-                return 'webshell'   
+    if response.status_code == 200:  
+        try:                                             # file_hash가 virusotal에 등록된 경우
+            res = resp_content['data']['attributes']['crowdsourced_yara_results']     # 악성코드에 해당되는 기준
             
-        return 'other'                   # 웹쉘이 아닌 다른 악성코드인 경우, 'other' 반환
+            for r in res:                    # 해당되는 기준 순회
+                tmp = r['rule_name']         # 기준 이름
+                if 'webshell' in tmp:        # 기준 이름에 'webshell' 단어 포함 시 -> 웹쉘로 판단
+                    return 'webshell'   
+        except:
+            return 'other'                   # 웹쉘이 아닌 다른 악성코드인 경우, 'other' 반환
     
     else:
         return False                     # 404 응답을 받은 경우 -> 악성코드로 판단하지 않음
@@ -164,8 +168,18 @@ def check_hash_via_malware_bazaar(file_path):
 
 # 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
 def write_csv(suspect_paths):
-    with open('webshell_detection_results.csv', mode='w') as csv_file:
-        field_names = ['File Name', 'File Path', 'Created At', 'Special character in extension', 'Multiple file extensions', 'Suspicious keyword present']
+    CSV_FILE_NAME = 'webshell_detection_results.csv'
+    with open(CSV_FILE_NAME, mode='w') as csv_file:
+        field_names = ['File Name', 
+                       'File Path', 
+                       'Created At', 
+                       'Special character in extension', 
+                       'Multiple file extensions', 
+                       'Suspicious keyword present',
+                       'Match known hash',
+                       'VirusTotal says',
+                       'MalwareBazaar says'
+                       ]
         writer = csv.DictWriter(csv_file, fieldnames=field_names)
         writer.writeheader()
 
@@ -186,10 +200,14 @@ def write_csv(suspect_paths):
                 'Created At': created_at,
                 'Special character in extension': row.special_character_in_file_extension,
                 'Multiple file extensions': row.multiple_extensions,
-                'Suspicious keyword present': row.suspicious_extensions_with_keywords
+                'Suspicious keyword present': row.suspicious_extensions_with_keywords,
+                'Match known hash': row.match_webshell_hash,
+                'VirusTotal says': row.found_at_virus_total,
+                'MalwareBazaar says': row.found_at_malware_bazaar
             }   # CSV에 적을 행
             
             writer.writerow(temp)
+        return CSV_FILE_NAME
 
 
 # main 함수
@@ -209,6 +227,11 @@ def detect_webshell(root_dir):
                 row.multiple_extensions = True
             if check_suspicious_extensions(file_path):  # 의심가는 확장자를 가진 파일 중, 웹쉘로 판단될 만한 키워드를 포함하고 있는 지 검증
                 row.suspicious_extensions_with_keywords = True
+            if check_stored_hash(file_path):
+                row.match_webshell_hash = True
+            
+            row.found_at_virus_total = check_hash_via_virus_total(file_path)
+            row.found_at_malware_bazaar = check_hash_via_malware_bazaar(file_path)
 
             if (
                 row.special_character_in_file_extension or
@@ -217,8 +240,10 @@ def detect_webshell(root_dir):
             ):  # 위의 3개 기준 중 하나 이상 해당하는 경우 
                 suspect_paths.append(row)   # 웹쉘로 판단, 기록
     
-    write_csv(suspect_paths)
-    print('done')
+    res = write_csv(suspect_paths)
+    return res
 
 
-# detect_webshell(target_directory) # specify the root directory of the web server
+target_directory = "./uploads"
+x = detect_webshell(target_directory) # specify the root directory of the web server
+print(x)

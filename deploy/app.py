@@ -1,9 +1,9 @@
 # 메인 flask 앱
 import os
+import pandas as pd
 
-from flask import Flask, flash, request, redirect, url_for, render_template
-from werkzeug.utils import secure_filename
-from detection_functions import *
+from flask import Flask, flash, request, redirect, render_template
+from detection_module import *
 
 
 app = Flask(__name__)
@@ -33,13 +33,17 @@ def upload_file():    # 시작 화면, 파일 업로드
 
 @app.route('/uploaded_file_list', methods = ['GET'])
 def uploaded_files_dashboard():
-    files = os.listdir("./uploads")
+    # files = os.listdir("./uploads")
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('uploaded_file_list.html', files=files)
 
 
 @app.route("/analysis_result", methods = ['GET'])
 def display_analysis_result():
-    return render_template('analysis_result.html')
+    result_file = detect_webshell(app.config['UPLOAD_FOLDER'])
+    with open(result_file) as file:
+        reader = csv.reader(file)
+        return render_template('analysis_result.html', csv=reader)
 
 
 @app.route('/')
