@@ -18,19 +18,18 @@ def upload_file():    # 시작 화면, 파일 업로드
             flash('No files detected')
             return redirect([request.url])
         
-        f = request.files['file']
+        else:
+            files = request.files.getlist('file')
 
-        if f.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if f:
-            file_name = f.filename
-            # 파일 이름에 특수문자 포함 시, 서비스 거부
-            f.save(app.config['UPLOAD_FOLDER'] + file_name)
-            return render_template("upload_result.html", name=file_name)
+            for file in files:
+                file_name = file.filename
+                file.save(app.config['UPLOAD_FOLDER'] + file_name)
+                # 파일 이름에 특수문자 포함 시, 서비스 거부
+                
+            return render_template("upload_result.html", name=files)
     else:
         return render_template("index.html")
-        
+
 
 @app.route('/uploaded_file_list', methods = ['GET'])
 def uploaded_files_dashboard():
