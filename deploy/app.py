@@ -1,6 +1,5 @@
 # 메인 flask 앱
 import os
-import pandas as pd
 
 from flask import Flask, flash, request, redirect, render_template
 from detection_module import *
