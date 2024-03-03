@@ -90,17 +90,17 @@ def check_suspicious_extensions(file_path):
             
 
 # 4. 현재 보유한 웹쉘의 SHA256 해시값 중, 주어진 파일의 해시값이 존재하는 지 판별
-def check_stored_hash(file_path):
+def check_stored_hash(file_hash):
     HASH_LIST = set({
         'f9fea823076f5a68fffea0eedc761e258a463b411a7364cf1abb5ab0f5f82024',
         'f318db10e2536fdab7c1799d90113d3f837325dc896713135ed5d6f30f035dab',
         'e9b35b391d248775771d0690adc9eb63c70892cc3c09526101ec97dbe79232d7',
     })  # 알려진 웹쉘들의 해시값을 모아둔 set
 
-    f = open(file_path, 'rb')
-    data = f.read()
-    f.close()
-    file_hash = hashlib.sha256(data).hexdigest() 
+    # f = open(file_path, 'rb')
+    # data = f.read()
+    # f.close()
+    # file_hash = hashlib.sha256(data).hexdigest() 
 
     if file_hash in HASH_LIST:  # 해시값이 웹쉘의 해시값 중 하나와 같다면 -> 웹쉘로 판단
         return True             
@@ -109,11 +109,11 @@ def check_stored_hash(file_path):
 
 
 # 5. virustotal에 파일해시값 업로드 후 웹쉘인지 판별
-def check_hash_via_virus_total(file_path):
-    f = open(file_path, 'rb')
-    data = f.read()
-    f.close()
-    file_hash = hashlib.sha256(data).hexdigest()                             
+def check_hash_via_virus_total(file_hash):
+    # f = open(file_path, 'rb')
+    # data = f.read()
+    # f.close()
+    # file_hash = hashlib.sha256(data).hexdigest()                             
 
     url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
     api_key = os.getenv("VIRUSTOTAL_API_KEY")
@@ -142,11 +142,11 @@ def check_hash_via_virus_total(file_path):
 
 
 # 6. 파일 해시값이 MalwareBazaar에 악성코드로 분류되었는지 판단
-def check_hash_via_malware_bazaar(file_path):
-    f = open(file_path, 'rb')
-    data = f.read()
-    f.close()
-    file_hash = hashlib.sha256(data).hexdigest()              # file_path 에 있는 파일의 SHA256 해시값
+def check_hash_via_malware_bazaar(file_hash):
+    # f = open(file_path, 'rb')
+    # data = f.read()
+    # f.close()
+    # file_hash = hashlib.sha256(data).hexdigest()              # file_path 에 있는 파일의 SHA256 해시값
 
     data = {'query': 'get_info', 'hash': file_hash}
     url = "https://mb-api.abuse.ch/api/v1/"
@@ -235,11 +235,11 @@ def detect_webshell(root_dir):
                 row.multiple_extensions = True
             if check_suspicious_extensions(file_path):  # 의심가는 확장자를 가진 파일 중, 웹쉘로 판단될 만한 키워드를 포함하고 있는 지 검증
                 row.suspicious_extensions_with_keywords = True
-            if check_stored_hash(file_path):
+            if check_stored_hash(row.sha256_hash):
                 row.match_webshell_hash = True
             
-            row.found_at_virus_total = check_hash_via_virus_total(file_path)
-            row.found_at_malware_bazaar = check_hash_via_malware_bazaar(file_path)
+            row.found_at_virus_total = check_hash_via_virus_total(row.sha256_hash)
+            row.found_at_malware_bazaar = check_hash_via_malware_bazaar(row.sha256_hash)
 
             if (
                 row.special_character_in_file_extension or
