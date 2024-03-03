@@ -247,7 +247,7 @@ def detect_webshell(root_dir):
                 row.suspicious_extensions_with_keywords or
                 row.found_at_virus_total != False or
                 row.found_at_malware_bazaar != False
-            ):  # 위의 3개 기준 중 하나 이상 해당하는 경우 
+            ):  # 위의 5개 기준 중 하나 이상 해당하는 경우 
                 suspect_paths.append(row)   # 웹쉘로 판단, 기록
     
     res = write_csv(suspect_paths)
