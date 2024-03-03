@@ -35,6 +35,7 @@ load_dotenv()
 class subject:                                               # 검사한 파일의 정보를 저장하는 class
     def __init__(self) -> None:
         self.file_path = './'                                # 파일 경로
+        self.sha256_hash = ''
         self.special_character_in_file_extension = False     # 확장자 속 특수문자 포함 여부
         self.multiple_extensions = False                     # 여러 확장자를 가지는 지 여부
         self.suspicious_extensions_with_keywords = False     # 의심가는 확장자이고, 웹쉘로 판단할 수 있는 키워드를 포함하는 지
@@ -173,6 +174,7 @@ def write_csv(suspect_paths):
         field_names = ['File Name', 
                        'File Path', 
                        'Created At', 
+                       'SHA256 hash',
                        'Special character in extension', 
                        'Multiple file extensions', 
                        'Suspicious keyword present',
@@ -198,6 +200,7 @@ def write_csv(suspect_paths):
                 'File Name': file_name,
                 'File Path': abs_path,
                 'Created At': created_at,
+                'SHA256 hash': row.sha256_hash,
                 'Special character in extension': row.special_character_in_file_extension,
                 'Multiple file extensions': row.multiple_extensions,
                 'Suspicious keyword present': row.suspicious_extensions_with_keywords,
@@ -221,6 +224,11 @@ def detect_webshell(root_dir):
             row = subject()  # 현재 보고있는 파일의 이름, 웹쉘로 판단한 근거를 저장
             row.file_path = file_path
 
+            f = open(file_path, 'rb')
+            data = f.read()
+            f.close()
+            row.sha256_hash = hashlib.sha256(data).hexdigest()
+
             if check_special_character_in_file_extension(file_path):  # 확장자 속 특수문자 존재 여부 검증
                 row.special_character_in_file_extension = True
             if check_multiple_extensions_of_file(file_path):  # 여러 개의 확장자를 가지는 지 검증
@@ -236,7 +244,9 @@ def detect_webshell(root_dir):
             if (
                 row.special_character_in_file_extension or
                 row.multiple_extensions or
-                row.suspicious_extensions_with_keywords
+                row.suspicious_extensions_with_keywords or
+                row.found_at_virus_total != False or
+                row.found_at_malware_bazaar != False
             ):  # 위의 3개 기준 중 하나 이상 해당하는 경우 
                 suspect_paths.append(row)   # 웹쉘로 판단, 기록
     
@@ -244,6 +254,6 @@ def detect_webshell(root_dir):
     return res
 
 
-target_directory = "./uploads"
-x = detect_webshell(target_directory) # specify the root directory of the web server
-print(x)
+# target_directory = "./uploads"
+# x = detect_webshell(target_directory) # specify the root directory of the web server
+# print(x)

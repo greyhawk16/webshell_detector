@@ -1,7 +1,7 @@
 # 메인 flask 앱
 import os
 
-from flask import Flask, flash, request, redirect, render_template
+from flask import Flask, flash, request, redirect, render_template, send_file
 from detection_module import *
 
 
@@ -48,7 +48,8 @@ def display_analysis_result():
 @app.route("/download_result", methods = ['GET'])
 def download_analysis_result():
     # 분석결과를 담은 CSV 파일을 다운로드
-    return 'download CSV'
+    result_file = 'webshell_detection_results.csv'
+    return send_file(result_file, as_attachment=True)
 
 
 @app.route('/')
