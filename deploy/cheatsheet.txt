@@ -1,5 +1,0 @@
-이미지 생성:   docker build -t 이미지명:버전
-
-이미지 검사:   docker inspect 이미지명:버전
-
-이미지로 컨테이너 작동:  docker run -i -t 이미지명:버전
