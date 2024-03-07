@@ -1,0 +1,17 @@
+<html lang="en"> 
+    <head> 
+        <title> Table </title>               
+    </head> 
+    <body> 
+        <table id="demo">
+            {% for row in csv %}
+              <tr>
+              {% for col in row %}
+              <td>{{ col }}</td>
+              {% endfor %}
+              </tr>
+            {% endfor %}
+        </table>
+        <a href="/download_result">Download CSV</a>
+    </body> 
+</html>
