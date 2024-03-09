@@ -152,19 +152,22 @@ def check_hash_via_malware_bazaar(file_hash):
     url = "https://mb-api.abuse.ch/api/v1/"
     response = requests.post(url, data=data)
 
-    if response.json()["query_status"] != 'hash_not_found':   # 악성코드의 해시값과 일치할 경우
-        response_json = response.json()["data"][0]
+    try: 
+        if response.json()["query_status"] != 'hash_not_found':   # 악성코드의 해시값과 일치할 경우
+            response_json = response.json()["data"][0]
 
-        tag_list = response_json['tags']     # 악성코드의 태그 정보
-        print(tag_list)
-        tag_list = set(tag_list)             # 시간복잡도 향상을 위해, set으로 변환
+            tag_list = response_json['tags']     # 악성코드의 태그 정보
+            print(tag_list)
+            tag_list = set(tag_list)             # 시간복잡도 향상을 위해, set으로 변환
 
-        if 'webshell' in tag_list:           # 해당 악성코드의 대크에 'webshell'이 있다면 
-            return 'webshell'                # 웹쉘로 판단
+            if 'webshell' in tag_list:           # 해당 악성코드의 대크에 'webshell'이 있다면 
+                return 'webshell'                # 웹쉘로 판단
+            else:
+                return 'others'                  # 웹쉘이 아닌 다른 악성코드로 판단
         else:
-            return 'others'                  # 웹쉘이 아닌 다른 악성코드로 판단
-    else:
-        return False                         # 악성코드가 아닌 파일로 판단
+            return False                         # 악성코드가 아닌 파일로 판단
+    except:
+        return False
 
 
 # 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
