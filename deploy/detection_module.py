@@ -191,10 +191,9 @@ def write_csv(suspect_paths):
             abs_path = os.path.abspath(tmp)  # file_path를 절대 경로로 변환
             
             # OS 별 파일 생성일시를 파악하는 방법에 차이 존재
-            if platform.system == 'Windows':
-                created_at = os.path.getctime(abs_path)
-            else:
-                created_at = os.stat(abs_path).st_birthtime
+            created_at = os.path.getctime(abs_path)
+            # else:
+            #     created_at = os.stat(abs_path).st_birthtime
 
             temp = {
                 'File Name': file_name,
