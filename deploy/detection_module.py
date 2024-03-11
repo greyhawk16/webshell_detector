@@ -1,5 +1,5 @@
 """
-    원본: https://github.com/therealdriss/Webshell-Detect
+    참고한 코드: https://github.com/therealdriss/Webshell-Detect
 
     추가기능: 
     - regex를 활용하여 파일 확장자 내 특수문자 탐지 
@@ -8,11 +8,7 @@
     - 파일의 해시값이 VirusTotal, MalwareBazaar에서 악성코드로 분류되는 지 파악
     - csv에 탐지된 파일 이름, 절대경로, 생성일시, 탐지 사유 기록
 
-    추후 계획: 도커화
-
-    웹쉘 해시값 리스트: https://github.com/greyhawk16/sfiles_yara/blob/master/hacktools/web_shells.yara
-
-    사용예정 API
+    사용한 API
     - VirusTotalAPI
     - MalwareBazaar(https://bazaar.abuse.ch/api/)
 """
@@ -28,7 +24,7 @@ import hashlib
 
 from dotenv import load_dotenv
 
-# target_directory = input('Enter target directory: ')
+
 load_dotenv()
 
 
@@ -39,7 +35,7 @@ class subject:                                               # 검사한 파일�
         self.special_character_in_file_extension = False     # 확장자 속 특수문자 포함 여부
         self.multiple_extensions = False                     # 여러 확장자를 가지는 지 여부
         self.suspicious_extensions_with_keywords = False     # 의심가는 확장자이고, 웹쉘로 판단할 수 있는 키워드를 포함하는 지
-        self.match_webshell_hash = False                   # 보유한 웹쉘 해시값 중 한 개와 일치하는 지
+        self.match_webshell_hash = False                     # 보유한 웹쉘 해시값 중 한 개와 일치하는 지
         self.found_at_virus_total = False                    # VirusTotal에 웹쉘 또는 기타 악성코드로 등록되어 있는 지
         self.found_at_malware_bazaar = False                 # MalwareBazaar 에 웹쉘 또는 그 외 악성코드로 등록되어 있는 지  
 
@@ -70,8 +66,8 @@ def check_multiple_extensions_of_file(file_path):
 
 # 3. 의심가는 확장자 검사
 def check_suspicious_extensions(file_path):
-    webshell_extensions = ['.php', '.asp', '.jsp'] # add any other extensions commonly used for webshells
-    webshell_keywords = ['system', 'shell_exec', 'eval'] # add any other keywords commonly used in webshells
+    webshell_extensions = ['.php', '.asp', '.jsp'] 
+    webshell_keywords = ['system', 'shell_exec', 'eval']
     file_extension = os.path.splitext(file_path)[1]
 
     if file_extension in webshell_extensions:  # 의심 확장자 포함 시
@@ -83,7 +79,7 @@ def check_suspicious_extensions(file_path):
                 if keyword in file_contents:
                      keywords_found.append(keyword)
 
-                if keywords_found:  # 의심가는 확장자의 파일 중, 웹쉘로 판단될 키워드 포함 시 -> 웹쉘로 판단
+                if keywords_found:  # 웹쉘로 판단될 키워드 포함 시 -> 웹쉘로 판단
                     return True     
             else:
                 return False
@@ -97,11 +93,6 @@ def check_stored_hash(file_hash):
         'e9b35b391d248775771d0690adc9eb63c70892cc3c09526101ec97dbe79232d7',
     })  # 알려진 웹쉘들의 해시값을 모아둔 set
 
-    # f = open(file_path, 'rb')
-    # data = f.read()
-    # f.close()
-    # file_hash = hashlib.sha256(data).hexdigest() 
-
     if file_hash in HASH_LIST:  # 해시값이 웹쉘의 해시값 중 하나와 같다면 -> 웹쉘로 판단
         return True             
     else:
@@ -109,11 +100,7 @@ def check_stored_hash(file_hash):
 
 
 # 5. virustotal에 파일해시값 업로드 후 웹쉘인지 판별
-def check_hash_via_virus_total(file_hash):
-    # f = open(file_path, 'rb')
-    # data = f.read()
-    # f.close()
-    # file_hash = hashlib.sha256(data).hexdigest()                             
+def check_hash_via_virus_total(file_hash):    
 
     url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
     api_key = os.getenv("VIRUSTOTAL_API_KEY")
@@ -143,10 +130,6 @@ def check_hash_via_virus_total(file_hash):
 
 # 6. 파일 해시값이 MalwareBazaar에 악성코드로 분류되었는지 판단
 def check_hash_via_malware_bazaar(file_hash):
-    # f = open(file_path, 'rb')
-    # data = f.read()
-    # f.close()
-    # file_hash = hashlib.sha256(data).hexdigest()              # file_path 에 있는 파일의 SHA256 해시값
 
     data = {'query': 'get_info', 'hash': file_hash}
     url = "https://mb-api.abuse.ch/api/v1/"
@@ -172,7 +155,9 @@ def check_hash_via_malware_bazaar(file_hash):
 
 # 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
 def write_csv(suspect_paths):
+
     CSV_FILE_NAME = 'webshell_detection_results.csv'
+
     with open(CSV_FILE_NAME, mode='w') as csv_file:
         field_names = ['File Name', 
                        'File Path', 
@@ -195,8 +180,6 @@ def write_csv(suspect_paths):
             
             # OS 별 파일 생성일시를 파악하는 방법에 차이 존재
             created_at = os.path.getctime(abs_path)
-            # else:
-            #     created_at = os.stat(abs_path).st_birthtime
 
             temp = {
                 'File Name': file_name,
@@ -223,7 +206,7 @@ def detect_webshell(root_dir):
         for file in files:
             file_path = os.path.join(root, file)
 
-            row = subject()  # 현재 보고있는 파일의 이름, 웹쉘로 판단한 근거를 저장
+            row = subject()  # 현재 보고있는 파일의 이름, 경로, 분석 결과를 저장
             row.file_path = file_path
 
             f = open(file_path, 'rb')
@@ -231,12 +214,15 @@ def detect_webshell(root_dir):
             f.close()
             row.sha256_hash = hashlib.sha256(data).hexdigest()
 
-            if check_special_character_in_file_extension(file_path):  # 확장자 속 특수문자 존재 여부 검증
+            if check_special_character_in_file_extension(file_path):  
                 row.special_character_in_file_extension = True
-            if check_multiple_extensions_of_file(file_path):  # 여러 개의 확장자를 가지는 지 검증
+
+            if check_multiple_extensions_of_file(file_path):  
                 row.multiple_extensions = True
-            if check_suspicious_extensions(file_path):  # 의심가는 확장자를 가진 파일 중, 웹쉘로 판단될 만한 키워드를 포함하고 있는 지 검증
+
+            if check_suspicious_extensions(file_path):  
                 row.suspicious_extensions_with_keywords = True
+
             if check_stored_hash(row.sha256_hash):
                 row.match_webshell_hash = True
             
@@ -254,8 +240,3 @@ def detect_webshell(root_dir):
     
     res = write_csv(suspect_paths)
     return res
-
-
-# target_directory = "./uploads"
-# x = detect_webshell(target_directory) # specify the root directory of the web server
-# print(x)

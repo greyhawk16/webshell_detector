@@ -5,21 +5,35 @@
 - <img src="https://img.shields.io/badge/Framework-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/flask-000000?style=for-the-badge&logo=flask&logoColor=white">
 - <img src="https://img.shields.io/badge/Language-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> 
 
+## 필수 패키지
+- `git`
+- `docker-compose`
+
+## 실행 및 삭제
+
+### 실행
+1. `virus total`에 회원가입 후, API 키를 발급받는다.
+
+2. `git clone https://github.com/greyhawk16/webshell_detector.git`를 실행하여, 현재 리포지토리를 로컬 환경으로 복사한다.
+
+3. `deploy` 폴더에 `.ENV` 파일을 생성한다.
+
+4. 앞서 얻은 API 키를 `.ENV`에 추가한다. 단, 이름은 `VIRUSTOTAL_API_KEY`로 지정한다.
+
+5. `docker-compose.yaml`이 있는 폴더에서, `docker compose up -d`를 실행한다.
+
+### 삭제
+1. `docker-compose.yaml`이 있는 폴더에서, `docker compose down`을 실행한다.
+
+
 ## 비즈니스 로직
-<details>
-<summary>클릭해서 읽어주세요!</summary>
 
-1. 파일 업로드
+1. 분석하고 싶은 파일들을 업로드한다.
 
-2. 업로드 한 파일들을 확인하는 URL `/file_upload`로 이동
+2. 업로드 한 파일들을 확인하는 URL `/file_upload`로 이동한다.
 
-3. `/file_upload`에서 `Analyze` 버튼 누르기 
+3. `/file_upload`에서 `Analyze` 버튼을 누르면, 분석을 시작한다.
 
-4. 분석 결과는 주소 `/analysis_result`에서 표 형식으로 화면에 표시
+4. `/analysis_result`에서 분석결과를 표 형식으로 화면에 표시한다.
 
-5. `/analysis_result`에서 `Download CSV` 링크를 눌러서 분석 결과를 CSV 파일로 다운로드 가능
-
-</details>
-
-## 기타
-도커파일은 현재 제작 중이며, 아직 사용하실 수 없습니다.
+5. 4의 `Download CSV` 버튼을 누르면, 분석 결과를 CSV 파일로 다운로드 할 수 있다.

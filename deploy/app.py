@@ -27,16 +27,8 @@ def upload_file():    # 시작 화면, 파일 업로드
 
             files = os.listdir(app.config['UPLOAD_FOLDER'])
             return render_template('uploaded_file_list.html', files=files)
-            # return render_template("upload_result.html", name=files)       # upload_result.html은 미사용
     else:
         return render_template("index.html")
-
-
-# @app.route('/uploaded_file_list', methods = ['GET'])
-# def uploaded_files_dashboard():
-#     # files = os.listdir("./uploads")
-#     files = os.listdir(app.config['UPLOAD_FOLDER'])
-#     return render_template('uploaded_file_list.html', files=files)
 
 
 @app.route("/analysis_result", methods = ['GET'])
