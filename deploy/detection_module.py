@@ -21,6 +21,7 @@ import platform
 import requests
 import json
 import hashlib
+import pefile
 
 from dotenv import load_dotenv
 
@@ -151,6 +152,23 @@ def check_hash_via_malware_bazaar(file_hash):
             return False                         # 악성코드가 아닌 파일로 판단
     except:
         return False
+    
+
+
+# 엔트로피를 이용하는 함수
+    
+
+# exe 대상, 악성코드 개발자 환경 추측: Rich header 사용
+    
+
+# 악성코드 내 디지털 서명 여부 판별 및 상세정보 획득
+    
+
+# IAT, EAT 정보
+    
+
+# section이 지닌 메타데이터 정보 획득
+
 
 
 # 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
