@@ -156,19 +156,32 @@ def check_hash_via_malware_bazaar(file_hash):
 
 
 # 엔트로피를 이용하는 함수
-    
+def check_entropy(file_path):
+    entropy = 0
+    return entropy
 
 # exe 대상, 악성코드 개발자 환경 추측: Rich header 사용
-    
+def get_rich_header(file_path):
+    rich_header = {}
+    return rich_header 
+
 
 # 악성코드 내 디지털 서명 여부 판별 및 상세정보 획득
-    
+def get_certification_info(file_path):
+    cert_entry = None
+    return cert_entry
+
 
 # IAT, EAT 정보
-    
+def get_iat_eat(file_path):
+    iat_eat_info = None
+    return iat_eat_info
+
 
 # section이 지닌 메타데이터 정보 획득
-
+def get_section_info(file_path):
+    section_info = None
+    return section_info
 
 
 # 웹쉘로 분류된 파일의 정보, 분류 사유를 csv에 적는 함수
