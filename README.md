@@ -1,39 +1,49 @@
-# webshell_detector
-파이썬을 이용한 웹쉘 파일 탐지기
+# Webshell_detector
+Webshell detection, analyzing service using `flask`
 
-## 프레임워크 및 사용 언어
+Korean version ->
+
+## Framework, Language, Web server
 - <img src="https://img.shields.io/badge/Framework-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/flask-000000?style=for-the-badge&logo=flask&logoColor=white">
 - <img src="https://img.shields.io/badge/Language-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> 
+- 
 
-## 필수 패키지
-- `git`
-- `docker-compose`
+## Requirements
+1. `git`
+2. `docker-compose`
 
-## 실행 및 삭제
+## Run or Delete
 
-### 실행
-1. `virus total`에 회원가입 후, API 키를 발급받는다.
+### Run
+1. Join `virus total` to get API key. 
 
-2. `git clone https://github.com/greyhawk16/webshell_detector.git`를 실행하여, 현재 리포지토리를 로컬 환경으로 복사한다.
+2. Run `git clone https://github.com/greyhawk16/webshell_detector.git`
 
-3. `deploy` 폴더에 `.ENV` 파일을 생성한다.
+3. Create `.ENV` file in `deploy` directory.
 
-4. 앞서 얻은 API 키를 `.ENV`에 추가한다. 단, 이름은 `VIRUSTOTAL_API_KEY`로 지정한다.
+4. Write your virus total API key to `.ENV`. Specify it's name as `VIRUSTOTAL_API_KEY`.
 
-5. `docker-compose.yaml`이 있는 폴더에서, `docker compose up -d`를 실행한다.
+5. Run `docker compose up -d` in this directory to run this web service.
 
-### 삭제
-1. `docker-compose.yaml`이 있는 폴더에서, `docker compose down`을 실행한다.
+### Delete
+1. Run `docker compose down` to stop and delete this web service.
 
 
-## 비즈니스 로직
+## Business Logic
 
-1. 분석하고 싶은 파일들을 업로드한다.
+1. Upload files you want to analyze.
 
-2. 업로드 한 파일들을 확인하는 URL `/file_upload`로 이동한다.
+2. After upload, go to `/file_upload`.
 
-3. `/file_upload`에서 `Analyze` 버튼을 누르면, 분석을 시작한다.
+3. Push `Analyze` button to start analysis.
 
-4. `/analysis_result`에서 분석결과를 표 형식으로 화면에 표시한다.
+4. `/analysis_result` will show analysis result in table format.
 
-5. 4의 `Download CSV` 버튼을 누르면, 분석 결과를 CSV 파일로 다운로드 할 수 있다.
+5. Click `Download CSV` button to download results as CSV file.
+
+
+## Standards used in detection
+
+
+## References
+[] https://www.igloo.co.kr/security-information/webshell-%ED%8C%A8%ED%84%B4-%EC%88%98%EC%A7%91-%EC%A0%90%EA%B2%80-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%8B%A4%ED%96%89-%EB%B0%8F-%EC%9C%A0%ED%98%95%EB%B3%84-%EB%B6%84%EC%84%9D%EB%B0%A9%EB%B2%95/

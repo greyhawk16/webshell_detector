@@ -1,8 +1,9 @@
 # 메인 flask 앱
 import os
+import csv
 
 from flask import Flask, flash, request, redirect, render_template, send_file
-from detection_module import *
+from detection_module import detect_webshell
 
 
 app = Flask(__name__)
