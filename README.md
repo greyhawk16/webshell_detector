@@ -1,5 +1,5 @@
 # Webshell_detector
-Webshell detection, analyzing service using `flask`
+Webshell detection, analysis service using `flask`
 
 Korean version [->](https://github.com/greyhawk16/webshell_detector/blob/main/README_KOR.md)
 
