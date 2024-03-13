@@ -121,10 +121,11 @@ def check_hash_via_virus_total(file_hash):
             for r in res:                    # 해당되는 기준 순회
                 tmp = r['rule_name']         # 기준 이름
                 if 'webshell' in tmp:        # 기준 이름에 'webshell' 단어 포함 시 -> 웹쉘로 판단
-                    return 'webshell'   
+                    return 'webshell'  
+            else:
+                return 'other'
         except:
             return 'other'                   # 웹쉘이 아닌 다른 악성코드인 경우, 'other' 반환
-    
     else:
         return False                     # 404 응답을 받은 경우 -> 악성코드로 판단하지 않음
 
