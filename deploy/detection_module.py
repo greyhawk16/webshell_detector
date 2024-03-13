@@ -198,8 +198,8 @@ def write_csv(suspect_paths):
                        'Multiple file extensions', 
                        'Suspicious keyword present',
                        'Match known hash',
-                       'VirusTotal says',
-                       'MalwareBazaar says'
+                       'Result from VirusTotal',
+                       'Result from MalwareBazaar'
                        ]
         writer = csv.DictWriter(csv_file, fieldnames=field_names)
         writer.writeheader()
@@ -221,8 +221,8 @@ def write_csv(suspect_paths):
                 'Multiple file extensions': row.multiple_extensions,
                 'Suspicious keyword present': row.suspicious_extensions_with_keywords,
                 'Match known hash': row.match_webshell_hash,
-                'VirusTotal says': row.found_at_virus_total,
-                'MalwareBazaar says': row.found_at_malware_bazaar
+                'Result from VirusTotal': row.found_at_virus_total,
+                'Result from MalwareBazaar': row.found_at_malware_bazaar
             }   # CSV에 적을 행
             
             writer.writerow(temp)
