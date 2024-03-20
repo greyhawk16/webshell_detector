@@ -9,8 +9,7 @@ Korean version [->](https://github.com/greyhawk16/webshell_detector/blob/main/RE
 - <img src="https://img.shields.io/badge/Server-%23121011?style=for-the-badge">![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 
 ## Requirements
-1. `git`
-2. `docker-compose`
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
 ## Run or Delete
 
