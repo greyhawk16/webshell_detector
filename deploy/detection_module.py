@@ -193,7 +193,7 @@ def write_csv(suspect_paths):
     with open(CSV_FILE_NAME, mode='w') as csv_file:
         field_names = ['File Name', 
                        'File Path', 
-                       'Created At', 
+                       'Examined At', 
                        'SHA256 hash',
                        'Special character in extension', 
                        'Multiple file extensions', 
@@ -216,7 +216,7 @@ def write_csv(suspect_paths):
             temp = {
                 'File Name': file_name,
                 'File Path': abs_path,
-                'Created At': created_at,
+                'Examined At': created_at,
                 'SHA256 hash': row.sha256_hash,
                 'Special character in extension': row.special_character_in_file_extension,
                 'Multiple file extensions': row.multiple_extensions,
