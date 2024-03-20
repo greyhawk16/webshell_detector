@@ -123,9 +123,9 @@ def check_hash_via_virus_total(file_hash):
                 if 'webshell' in tmp:        # 기준 이름에 'webshell' 단어 포함 시 -> 웹쉘로 판단
                     return 'webshell'  
             else:
-                return 'other'
+                return 'Other'
         except:
-            return 'other'                   # 웹쉘이 아닌 다른 악성코드인 경우, 'other' 반환
+            return 'Other'                   # 웹쉘이 아닌 다른 악성코드인 경우, 'Other' 반환
     else:
         return False                     # 404 응답을 받은 경우 -> 악성코드로 판단하지 않음
 
@@ -148,7 +148,7 @@ def check_hash_via_malware_bazaar(file_hash):
             if 'webshell' in tag_list:           # 해당 악성코드의 대크에 'webshell'이 있다면 
                 return 'webshell'                # 웹쉘로 판단
             else:
-                return 'others'                  # 웹쉘이 아닌 다른 악성코드로 판단
+                return 'Other'                  # 웹쉘이 아닌 다른 악성코드로 판단
         else:
             return False                         # 악성코드가 아닌 파일로 판단
     except:
