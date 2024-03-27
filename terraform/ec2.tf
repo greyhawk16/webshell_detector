@@ -82,21 +82,22 @@ resource "aws_instance" "app_server" {
       #!/bin/bash
       "cd ./code",
       "chmod +x ./docker_install_script.sh",
-      "./docker_install_script.sh",
-      "docker compose up -d"
+      "./docker_install_script.sh"
     ]
   }
-
- user_data = <<-EOF
-              #!/bin/bash
-              systemctl enable docker
-              systemctl start docker
-              EOF
 
   # write public ip-address to location.txt
   provisioner "local-exec" {
     command = <<-EOT
       echo "${self.public_ip}:80" > location.txt
     EOT
+  }
+
+    provisioner "remote-exec" {
+    inline = [
+      #!/bin/bash
+      "cd ./code",
+      "docker compose up -d"
+    ]
   }
 }
