@@ -86,18 +86,18 @@ resource "aws_instance" "app_server" {
     ]
   }
 
-  # write public ip-address to location.txt
-  provisioner "local-exec" {
-    command = <<-EOT
-      echo "${self.public_ip}:80" > location.txt
-    EOT
-  }
-
     provisioner "remote-exec" {
     inline = [
       #!/bin/bash
       "cd ./code",
       "docker compose up -d"
     ]
+  }
+
+    # write public ip-address to location.txt
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo "${self.public_ip}:80" > location.txt
+    EOT
   }
 }
