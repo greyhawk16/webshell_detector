@@ -3,7 +3,7 @@ sudo apt install -y docker.io
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo groupadd docker
-sudo usermod -aG docker ubuntu
+sudo usermod -aG docker $USER
 
 DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
