@@ -4,35 +4,40 @@ Webshell detection, analysis service using `flask`
 Korean version [->](https://github.com/greyhawk16/webshell_detector/blob/main/README_KOR.md)
 
 ## Framework, Language, Web server
-- <img src="https://img.shields.io/badge/Language-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> 
-- <img src="https://img.shields.io/badge/Framework-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/flask-000000?style=for-the-badge&logo=flask&logoColor=white">
-- <img src="https://img.shields.io/badge/Server-%23121011?style=for-the-badge">![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
-- <img src="https://img.shields.io/badge/Container%20Platform-000000?style=for-the-badge">![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-- <img src="https://img.shields.io/badge/Cloud%20Platform-000000?style=for-the-badge">![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-- <img src="https://img.shields.io/badge/IAC-000000?style=for-the-badge">![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
+<img src="https://img.shields.io/badge/Language-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> 
+<img src="https://img.shields.io/badge/Framework-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/flask-000000?style=for-the-badge&logo=flask&logoColor=white"> 
+<img src="https://img.shields.io/badge/Server-%23121011?style=for-the-badge">![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
+
+<img src="https://img.shields.io/badge/Container%20Platform-000000?style=for-the-badge">![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+<img src="https://img.shields.io/badge/Cloud%20Platform-000000?style=for-the-badge">![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+<img src="https://img.shields.io/badge/IAC-000000?style=for-the-badge">![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 
 
 ## Requirements
-![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-
-- Terraform
-- AWS CLI
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+- Python [->](https://www.python.org/downloads/)
+- Terraform [->](https://developer.hashicorp.com/terraform/install)
+- AWS CLI [->](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
 ## Run or Delete
 
 ### Run
-1. Join `virus total` to get API key. 
+1. Join [VirusTotal](https://www.virustotal.com/gui/home/upload) to get API key. 
 
-2. Run `git clone https://github.com/greyhawk16/webshell_detector.git`
-
-3. Create `.ENV` file in `deploy` directory.
-
-4. Write your virus total API key to `.ENV`. Specify it's name as `VIRUSTOTAL_API_KEY`.
-
-5. Run `docker compose up -d` in this directory to run this web service.
+2. Run below commands.
+It will create `.ENV` file to store your API key from VirusTotal, 1 AWS EC2 instance for hosting this web application, 3 docker containers running on EC2 instance.
+    ```
+    git clone https://github.com/greyhawk16/webshell_detector.git
+    cd ./webshell detector
+    python3 deployer.py deploy YOUR_VIRUSTOTAL_API_KEY
+    ```
 
 ### Delete
-1. Run `docker compose down` to stop and delete this web service.
+Run below command to stop and delete this web service along with related resources.
+```
+cd ./webshell detector
+python3 deployer.py destroy
+```
 
 
 ## Business Logic
