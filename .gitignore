@@ -1,6 +1,7 @@
 *.csv
 .DS_Store
 .ENV
+ENV.txt
 *.json
 /시험용_파일_모음
 /code/deploy/__pycache__
