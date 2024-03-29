@@ -27,7 +27,7 @@ Korean version [->](https://github.com/greyhawk16/webshell_detector/blob/main/RE
 1. Join [VirusTotal](https://www.virustotal.com/gui/home/upload) to get API key. 
 
 2. Run below commands.
-It will create `.ENV` file to store your API key from VirusTotal, 1 AWS EC2 instance for hosting this web application, 3 docker containers running on EC2 instance.
+It will create `.ENV` file to store your API key from VirusTotal, 1 AWS EC2 instance for hosting this web application, 2 docker containers running on EC2 instance.
     ```
     git clone https://github.com/greyhawk16/webshell_detector.git
     cd ./webshell_detector
