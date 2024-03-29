@@ -8,13 +8,15 @@
 <img src="https://img.shields.io/badge/Cloud%20Platform-000000?style=for-the-badge">![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 <img src="https://img.shields.io/badge/IAC-000000?style=for-the-badge">![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 
-Webshell detection, analysis service using `flask`
+This web application anlayzes given file, and determines if it's webshell or not. When given other types of malware(ransomware, .etc), displays result as `Other`. After analysis, can download analysis result in CSV file.
 
 Korean version [->](https://github.com/greyhawk16/webshell_detector/blob/main/README_KOR.md)
 
 
 ## Requirements
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+<img src="https://img.shields.io/badge/OS-000000?style=for-the-badge">![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)
+
+<img src="https://img.shields.io/badge/Packages-000000?style=for-the-badge">![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 - Python [->](https://www.python.org/downloads/)
 - Terraform [->](https://developer.hashicorp.com/terraform/install)
 - AWS CLI [->](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
