@@ -30,7 +30,7 @@ Korean version [->](https://github.com/greyhawk16/webshell_detector/blob/main/RE
 It will create `.ENV` file to store your API key from VirusTotal, 1 AWS EC2 instance for hosting this web application, 3 docker containers running on EC2 instance.
     ```
     git clone https://github.com/greyhawk16/webshell_detector.git
-    cd ./webshell detector
+    cd ./webshell_detector
     python3 deployer.py deploy YOUR_VIRUSTOTAL_API_KEY
     ```
 
