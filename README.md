@@ -32,12 +32,12 @@ Korean version [➡️](https://github.com/greyhawk16/webshell_detector/blob/mai
 
 3. Run `aws configure` to configure default profile for AWS-CLI. Below is an example.
 
-```
-    AWS Access Key ID [None]: YOUR_ACCESS_KEY
-    AWS Secret Access Key [None]: YOUR_SECRET_ACCESS_KEY
-    Default region name [None]: us-east-2
-    Default output format [None]:
-```
+
+        AWS Access Key ID [None]: YOUR_ACCESS_KEY
+        AWS Secret Access Key [None]: YOUR_SECRET_ACCESS_KEY
+        Default region name [None]: us-east-2
+        Default output format [None]:
+
 
 
 4. Run below commands.
