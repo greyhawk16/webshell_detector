@@ -51,7 +51,6 @@ It will create `.ENV` file to store your API key from VirusTotal, 1 AWS EC2 inst
 ### Delete
 Run below command to stop and delete this web service along with related resources.
 ```
-cd ./webshell detector
 python3 deployer.py destroy
 ```
 
@@ -77,7 +76,7 @@ python3 deployer.py destroy
 
 3. Check file's hash value to known webshell's hash value.
 
-4. Send query to VirusTotal and MalwareBazaar to check hash value(`SHA256`) of given file is registered as webshell or other types of malware.
+4. Send query to VirusTotal and MalwareBazaar to check hash value(`SHA256`) of given file is registered as webshell or other types of malware. It will show `True` if hash is registered as webshell, `Other` when the hash is resgistered but not as webshell. `False` if hash is not found.
 
 
 

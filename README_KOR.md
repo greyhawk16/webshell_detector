@@ -31,12 +31,12 @@ English version [➡️](https://github.com/greyhawk16/webshell_detector/blob/ma
 
 3. 명령창에서 `aws configure`를 실행하여, 기본 profile을 설정해줍니다. 아래 명령은 예시입니다.
 
-```
-    AWS Access Key ID [None]: YOUR_ACCESS_KEY
-    AWS Secret Access Key [None]: YOUR_SECRET_ACCESS_KEY
-    Default region name [None]: us-east-2
-    Default output format [None]:
-```
+
+        AWS Access Key ID [None]: YOUR_ACCESS_KEY
+        AWS Secret Access Key [None]: YOUR_SECRET_ACCESS_KEY
+        Default region name [None]: us-east-2
+        Default output format [None]:
+
 
 4. 아래의 명령을 실행해줍니다.
 
@@ -51,10 +51,9 @@ English version [➡️](https://github.com/greyhawk16/webshell_detector/blob/ma
 
 아래 명령을 실행하면 앞서 생성한 AWS 리소스를 자동적으로 삭제할 수 있습니다.
 
-    ```
-    cd ./webshell detector
+
     python3 deployer.py destroy
-    ```
+
 
 이 명령은 `.ENV`, `.pem` 등의 파일까지는 삭제하지 않습니다.  
 
@@ -80,7 +79,7 @@ English version [➡️](https://github.com/greyhawk16/webshell_detector/blob/ma
 
 3. 알려진 웹쉘의 해시값과, 주어진 파일의 해시값을 비교합니다.
 
-4. 파일의 해시값이 VirusTotal 또는 MalwareBazaar에 웹쉘, 또는 기타 악성코드로서 등재되었는지 확인합니다.
+4. 파일의 해시값이 VirusTotal 또는 MalwareBazaar에 웹쉘, 또는 기타 악성코드로서 등재되었는지 확인합니다. 웹쉘로 등재되었다면 `True`, 그 외 악성코드로 등록된 경우 `Other`를 분석 결과에 표시해줍니다. 못찾았다면 `False`를 표시합니다.
 
 
 ## Planned Updates
