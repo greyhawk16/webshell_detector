@@ -81,6 +81,7 @@ English version [➡️](https://github.com/greyhawk16/webshell_detector/blob/ma
 
 4. 파일의 해시값이 VirusTotal 또는 MalwareBazaar에 웹쉘, 또는 기타 악성코드로서 등재되었는지 확인합니다. 웹쉘로 등재되었다면 `True`, 그 외 악성코드로 등록된 경우 `Other`를 분석 결과에 표시해줍니다. 못찾았다면 `False`를 표시합니다.
 
+위의 기준 중 하나라도 만족하는 파일은 웹쉘로 간주하며, 분석 결과에 포함시킵니다. 웹쉘이 아닌 기타 악성코드로 판단된 경우에도 분석결과에 포함합니다.
 
 ## Planned Updates
 1. 탐지 기능

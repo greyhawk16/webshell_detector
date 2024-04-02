@@ -78,7 +78,7 @@ python3 deployer.py destroy
 
 4. Send query to VirusTotal and MalwareBazaar to check hash value(`SHA256`) of given file is registered as webshell or other types of malware. It will show `True` if hash is registered as webshell, `Other` when the hash is resgistered but not as webshell. `False` if hash is not found.
 
-
+A file in which satisfies at least one standards above, is  considered as webshell and will be included in analysis result. Even if a file is found to be other types of malware, this will add the file to analysis result.
 
 ## Planned Updates
 1. Detection features
