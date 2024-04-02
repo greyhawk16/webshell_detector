@@ -11,8 +11,7 @@ if CMD == "deploy":
     os.system("cd ./terraform; terraform init; terraform apply")
 
 elif CMD == "destroy":
-    print("run destroy cmd")
-
     os.system("cd ./terraform; terraform destroy")
+
 else:
-    print("choose between deploy, destroy")
+    print("Please choose between deploy, destroy")
