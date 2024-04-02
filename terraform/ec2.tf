@@ -15,7 +15,7 @@ resource "aws_key_pair" "this" {
 
   provisioner "local-exec" {
     command = <<-EOT
-      echo "${tls_private_key.this.private_key_pem}" > webshell_detector-key_pair.pem
+      echo "${tls_private_key.this.private_key_pem}" > ${var.ssh-private-key-for-ec2}
     EOT
   }
 }
