@@ -59,7 +59,7 @@ Run `python3 deployer.py destroy` command to stop and delete this web service al
 
 <img width="1560" alt="스크린샷 2024-04-07 오전 6 24 29" src="https://github.com/greyhawk16/webshell_detector/assets/97436830/52180a7c-ec64-46bc-a731-fe0f8b1e1e97"><br/>
 
-2. Select files you want to analyze & push `Upload` button.<br/>
+2. Select the files you want to analyze & push `Upload` button.<br/>
 
 <img width="1486" alt="3_업로드 결과" src="https://github.com/greyhawk16/webshell_detector/assets/97436830/080b19da-c10a-471d-ad27-4fbe93e6fac9"><br/>
 
