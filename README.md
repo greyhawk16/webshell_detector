@@ -14,7 +14,18 @@ This web application analyzes a given file and determines if it's webshell or no
 Korean version [➡️](https://github.com/greyhawk16/webshell_detector/blob/main/README_KOR.md)
 
 
-## Requirements
+## Index
+- [A. Requirements](#a-requirements)
+- [B. Run](#b-run)
+- [C. Delete](#c-delete)
+- [D. Business Logic](#d-business-logic)
+- [E. Standards used in the detection](#e-standards-used-in-the-detection)
+- [F. Planned Updates](#f-planned-updates)
+- [G. References](#g-references)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+## A. Requirements
 <img src="https://img.shields.io/badge/OS-%23121011?style=for-the-badge">![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)![macOS](https://img.shields.io/badge/mac%20os-%23121011?style=for-the-badge&logo=macos&logoColor=F0F0F0)
 
 <img src="https://img.shields.io/badge/Packages-%23121011?style=for-the-badge">![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
@@ -23,9 +34,7 @@ Korean version [➡️](https://github.com/greyhawk16/webshell_detector/blob/mai
 - AWS CLI [➡](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 - GIT [➡](https://git-scm.com/downloads)
 
-## Run or Delete
-
-### Run
+## B. Run
 1. Join [VirusTotal](https://www.virustotal.com/gui/home/upload) to get API key. 
 
 2. Join AWS and get an access key. Make sure you save both `ACCESS KEY` and `SECRET ACCESS KEY`. You can store or see `SECRET ACCESS KEY` ONLY when you just created the access key.
@@ -48,11 +57,11 @@ It will create `.ENV` file to store your API key from VirusTotal, 1 AWS EC2 inst
     python3 deployer.py deploy YOUR_VIRUSTOTAL_API_KEY
     ```
 
-### Delete
+## C. Delete
 Run `python3 deployer.py destroy` command to stop and delete this web service along with related resources.
 
 
-## Business Logic
+## D. Business Logic
 <img width="193" alt="스크린샷 2024-04-07 오전 6 09 32" src="https://github.com/greyhawk16/webshell_detector/assets/97436830/be550bb4-af12-420b-a1c8-cc40a02786f5"><br/>
 
 1. Go to ip address written on `./terraform/location.txt`
@@ -74,7 +83,7 @@ Run `python3 deployer.py destroy` command to stop and delete this web service al
 6. Click the `Download CSV` button to download results as a CSV file.
 
 
-## Standards used in the detection
+## E. Standards used in the detection
 1. Check if a special character is present in the file's extension, or comes with more than 1 extension.[1]
 
 2. For files with extestions commonly used for webshell(`php`, `jsp`, `asp`), determine if it contains more than 1 suspicious keywords(`system`, `shell_exec`, `eval`).[2]
@@ -86,7 +95,7 @@ Run `python3 deployer.py destroy` command to stop and delete this web service al
 
 A file that satisfies at least one standard above, is considered a webshell and will be included in the analysis result. Even if a file is found to be other types of malware, this will add the file to the analysis result.
 
-## Planned Updates
+## F. Planned Updates
 1. Detection features
     - Analyze the Section's metadata
 
@@ -102,7 +111,7 @@ A file that satisfies at least one standard above, is considered a webshell and 
     - Implement `Server-Client` structure
     - Allow users to join, log in and store analysis results in their accounts.
 
-## References
+## G. References
 [1] https://www.igloo.co.kr/security-information/webshell-%ED%8C%A8%ED%84%B4-%EC%88%98%EC%A7%91-%EC%A0%90%EA%B2%80-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%8B%A4%ED%96%89-%EB%B0%8F-%EC%9C%A0%ED%98%95%EB%B3%84-%EB%B6%84%EC%84%9D%EB%B0%A9%EB%B2%95/
 
 [2] https://redcanary.com/threat-detection-report/trends/webshells/ 
