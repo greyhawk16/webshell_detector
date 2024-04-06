@@ -53,19 +53,29 @@ Run `python3 deployer.py destroy` command to stop and delete this web service al
 
 
 ## Business Logic
+<img width="193" alt="스크린샷 2024-04-07 오전 6 09 32" src="https://github.com/greyhawk16/webshell_detector/assets/97436830/be550bb4-af12-420b-a1c8-cc40a02786f5"><br/>
 
-1. Upload files you want to analyze.
-After uploading, go to `/file_upload`.
+1. Go to ip address written on `./terraform/location.txt`
 
-3. Push the `Analyze` button to start the analysis.
+<img width="1560" alt="스크린샷 2024-04-07 오전 6 24 29" src="https://github.com/greyhawk16/webshell_detector/assets/97436830/52180a7c-ec64-46bc-a731-fe0f8b1e1e97"><br/>
 
-4. `/analysis_result` will show the analysis result in table format.
+2. Select files you want to analyze & push `Upload` button.<br/>
 
-5. Click the `Download CSV` button to download results as a CSV file.
+<img width="1486" alt="3_업로드 결과" src="https://github.com/greyhawk16/webshell_detector/assets/97436830/080b19da-c10a-471d-ad27-4fbe93e6fac9"><br/>
+
+3. After uploading, you will be redirected to the `/file_upload`.
+
+4. Push the `Analyze` button to start the analysis.
+
+<img width="1498" alt="4_분석결과" src="https://github.com/greyhawk16/webshell_detector/assets/97436830/c7a02c68-d97c-45c6-9cd4-712ffdbf46db"><br/>
+
+5. `/analysis_result` will show the analysis result in table format.
+
+6. Click the `Download CSV` button to download results as a CSV file.
 
 
 ## Standards used in the detection
-Check if a special character is present in the file's extension, or comes with more than 1 extension.[1]
+1. Check if a special character is present in the file's extension, or comes with more than 1 extension.[1]
 
 2. For files with extestions commonly used for webshell(`php`, `jsp`, `asp`), determine if it contains more than 1 suspicious keywords(`system`, `shell_exec`, `eval`).[2]
 [3]
