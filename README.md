@@ -15,13 +15,13 @@ Korean version [➡️](https://github.com/greyhawk16/webshell_detector/blob/mai
 
 
 ## Index
-- [I. Requirements](#a-requirements)
-- [II. Run](#b-run)
-- [III. Delete](#c-delete)
-- [IV. Business Logic](#d-business-logic)
-- [V. Standards used in the detection](#e-standards-used-in-the-detection)
-- [VI. Planned Updates](#f-planned-updates)
-- [VII. References](#g-references)
+- [I. Requirements](#i-requirements)
+- [II. Run](#ii-run)
+- [III. Delete](#iii-delete)
+- [IV. Business Logic](#iv-business-logic)
+- [V. Standards used in the detection](#v-standards-used-in-the-detection)
+- [VI. Planned Updates](#vi-planned-updates)
+- [VII. References](#vii-references)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
