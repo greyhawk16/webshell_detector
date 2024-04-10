@@ -8,7 +8,7 @@
 <img src="https://img.shields.io/badge/Cloud%20Platform-%23121011?style=for-the-badge">![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 <img src="https://img.shields.io/badge/IAC-%23121011?style=for-the-badge">![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 
-This web application analyzes a given file and determines if it's webshell or not. When given other types of malware(ransomware, etc.), displays the result as `Other`. After analysis, can download the analysis result in a CSV file. 
+This web application analyzes a given file and determines if it's webshell or not. When given other types of malware(ransomware, etc.), display the result as `Other`. After analysis, can download the analysis result in a CSV file. 
 
 
 Korean version [➡️](https://github.com/greyhawk16/webshell_detector/blob/main/README_KOR.md)
