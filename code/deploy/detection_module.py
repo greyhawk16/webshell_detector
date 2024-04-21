@@ -102,13 +102,14 @@ def check_stored_hash(file_hash):
 
 # 5. virustotal에 파일해시값 업로드 후 웹쉘인지 판별
 def check_hash_via_virus_total(file_hash):    
+    API_KEY = os.getenv("VIRUSTOTAL_API_KEY")
+    API_URL = os.getenv("API_URL")
 
-    url = f"https://www.virustotal.com/api/v3/files/{file_hash}"
-    api_key = os.getenv("VIRUSTOTAL_API_KEY")
+    url = f"{API_URL}/{file_hash}"
 
     headers = {
         "accept": "application/json",
-        "x-apikey": api_key
+        "x-apikey": API_KEY
     }
 
     response = requests.get(url, headers=headers)
