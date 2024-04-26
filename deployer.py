@@ -7,7 +7,7 @@ if CMD == "deploy":
     API_URL = "https://www.virustotal.com/api/v3/files"
 
     f = open("./code/deploy/.ENV", "w")
-    f.write(f"API_URL='{API_URL}'\n")
+    f.write(f"VIRUSTOTAL_API_URL='{API_URL}'\n")
     f.write(f"VIRUSTOTAL_API_KEY='{API_KEY}'")
     f.close()
     
