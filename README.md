@@ -108,7 +108,8 @@ A file that satisfies at least one standard above, is considered a webshell and 
     - Calculate a file's entropy to determine if the file has been packed
 
 2. Others
-    - Implement `Server-Client` structure
+    - Use AWS S3 bucket to store files uploaded by a user.
+    - Implement Server-Client structure
     - Allow users to join, log in and store analysis results in their accounts.
 
 ## VII. References
