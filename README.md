@@ -96,7 +96,7 @@ Run `python3 deployer.py destroy` command to stop and delete this web service al
 A file that satisfies at least one standard above, is considered a webshell and will be included in the analysis result. Even if a file is found to be other types of malware, this will add the file to the analysis result.
 
 ## VI. Planned Updates
-1. Detection features
+1. Detection Features
     - Analyze the Section's metadata
 
     - Get information related to the target file's IAT & EAT
@@ -107,9 +107,11 @@ A file that satisfies at least one standard above, is considered a webshell and 
     - Check digital certification
     - Calculate a file's entropy to determine if the file has been packed
 
-2. Others
+2. Service Architecture
     - Use AWS S3 bucket to store files uploaded by a user.
     - Implement Server-Client structure
+
+3. User Experience 
     - Allow users to join, log in and store analysis results in their accounts.
 
 ## VII. References
