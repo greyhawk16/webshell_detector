@@ -22,6 +22,8 @@ import requests
 import json
 import hashlib
 import pefile
+import collections
+import math
 
 from dotenv import load_dotenv
 
@@ -36,9 +38,12 @@ class subject:                                               # 검사한 파일�
         self.special_character_in_file_extension = False     # 확장자 속 특수문자 포함 여부
         self.multiple_extensions = False                     # 여러 확장자를 가지는 지 여부
         self.suspicious_extensions_with_keywords = False     # 의심가는 확장자이고, 웹쉘로 판단할 수 있는 키워드를 포함하는 지
-        self.match_webshell_hash = False                     # 보유한 웹쉘 해시값 중 한 개와 일치하는 지
+        self.match_known_webshell_hash = False                     # 보유한 웹쉘 해시값 중 한 개와 일치하는 지
         self.found_at_virus_total = False                    # VirusTotal에 웹쉘 또는 기타 악성코드로 등록되어 있는 지
-        self.found_at_malware_bazaar = False                 # MalwareBazaar 에 웹쉘 또는 그 외 악성코드로 등록되어 있는 지  
+        self.found_at_malware_bazaar = False                 # MalwareBazaar 에 웹쉘 또는 그 외 악성코드로 등록되어 있는 지
+        self.file_entropy = 0                                # 파일의 엔트로피(범위: 0 이상 & 8이하) 계산, 7 이상 -> 악성코드로 간주
+        self.rich_header_key = None
+        self.rich_header_records = None
 
 
 # 1. 확장자 속 특수문자 파악
@@ -159,13 +164,50 @@ def check_hash_via_malware_bazaar(file_hash):
 
 # 엔트로피를 이용하는 함수
 def check_entropy(file_path):
+    with open(file_path, 'rb') as file:
+        data = file.read()
+
+    byte_cnt = collections.Counter(data)
+    file_length = len(data)
+
     entropy = 0
+
+    for cnt in byte_cnt.values():
+        p = cnt / file_length
+        
+        if p > 0:
+            entropy -= p * math.log2(p)
+
     return entropy
 
 # exe 대상, 악성코드 개발자 환경 추측: Rich header 사용
 def get_rich_header(file_path):
-    rich_header = {}
-    return rich_header 
+    # return : [Key, Records여부]
+
+    ans = {
+        'key': 'None',
+        'records': 'None'
+    }
+
+    try:
+        pe = pefile.PE(file_path)
+        rich_header = pe.parse_rich_header()
+
+        if rich_header != None:
+            print(f"Key: {rich_header['key']}")
+            ans['key'] = rich_header['key']
+
+            if 'records' in rich_header:
+                records = rich_header['records']
+                ans['records'] = records 
+    
+    except Exception as e:
+        ans = {
+        'key': 'Not PEfile',
+        'records': 'Not PEfile'
+    }
+
+    return ans
 
 
 # 악성코드 내 디지털 서명 여부 판별 및 상세정보 획득
@@ -201,7 +243,10 @@ def write_csv(suspect_paths):
                        'Suspicious keyword present',
                        'Match known hash',
                        'Result from VirusTotal',
-                       'Result from MalwareBazaar'
+                       'Result from MalwareBazaar',
+                       'Shannon Entropy',
+                       'Rich header Key',
+                       'Rich header Records'
                        ]
         writer = csv.DictWriter(csv_file, fieldnames=field_names)
         writer.writeheader()
@@ -214,18 +259,45 @@ def write_csv(suspect_paths):
             # OS 별 파일 생성일시를 파악하는 방법에 차이 존재
             created_at = os.path.getctime(abs_path)
 
-            temp = {
-                'File Name': file_name,
-                'File Path': abs_path,
-                'Examined At': created_at,
-                'SHA256 hash': row.sha256_hash,
-                'Special character in extension': row.special_character_in_file_extension,
-                'Multiple file extensions': row.multiple_extensions,
-                'Suspicious keyword present': row.suspicious_extensions_with_keywords,
-                'Match known hash': row.match_webshell_hash,
-                'Result from VirusTotal': row.found_at_virus_total,
-                'Result from MalwareBazaar': row.found_at_malware_bazaar
-            }   # CSV에 적을 행
+            result = [
+                file_name,
+                abs_path,
+                created_at,
+                row.sha256_hash,
+                row.special_character_in_file_extension,
+                row.multiple_extensions,
+                row.suspicious_extensions_with_keywords,
+                row.match_known_webshell_hash,
+                row.found_at_virus_total,
+                row.found_at_malware_bazaar,
+                row.file_entropy,
+                row.rich_header_key,
+                row.rich_header_records
+            ]
+
+            temp = dict()
+
+            for i in range(len(field_names)):
+                key = field_names[i]
+                dat = result[i]
+                temp[key] = dat
+
+
+            # temp = {
+            #     'File Name': file_name,
+            #     'File Path': abs_path,
+            #     'Examined At': created_at,
+            #     'SHA256 hash': row.sha256_hash,
+            #     'Special character in extension': row.special_character_in_file_extension,
+            #     'Multiple file extensions': row.multiple_extensions,
+            #     'Suspicious keyword present': row.suspicious_extensions_with_keywords,
+            #     'Match known hash': row.match_known_webshell_hash,
+            #     'Result from VirusTotal': row.found_at_virus_total,
+            #     'Result from MalwareBazaar': row.found_at_malware_bazaar,
+            #     'Shannon Entropy': row.file_entropy,
+            #     'Rich header Key': row.rich_header_key,
+            #     'Rich header Records present': row.rich_header_records
+            # }   # CSV에 적을 행
             
             writer.writerow(temp)
         return CSV_FILE_NAME
@@ -257,10 +329,15 @@ def detect_webshell(root_dir):
                 row.suspicious_extensions_with_keywords = True
 
             if check_stored_hash(row.sha256_hash):
-                row.match_webshell_hash = True
+                row.match_known_webshell_hash = True
             
             row.found_at_virus_total = check_hash_via_virus_total(row.sha256_hash)
             row.found_at_malware_bazaar = check_hash_via_malware_bazaar(row.sha256_hash)
+            row.file_entropy = check_entropy(row.file_path)
+            
+            rich_header_info = get_rich_header(row.file_path)
+            row.rich_header_key = rich_header_info['key']
+            row.rich_header_records = rich_header_info['records']
 
             if (
                 row.special_character_in_file_extension or
