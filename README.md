@@ -20,8 +20,9 @@ Korean version [➡️](https://github.com/greyhawk16/webshell_detector/blob/mai
 - [III. Delete](#iii-delete)
 - [IV. Business Logic](#iv-business-logic)
 - [V. Standards used in the detection](#v-standards-used-in-the-detection)
-- [VI. Planned Updates](#vi-planned-updates)
-- [VII. References](#vii-references)
+- [VI. Update history](#vi-update-history)
+- [VII. Planned Updates](#vii-planned-updates)
+- [VIII. References](#viii-references)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
