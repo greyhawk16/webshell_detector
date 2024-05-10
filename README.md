@@ -95,17 +95,24 @@ Run `python3 deployer.py destroy` command to stop and delete this web service al
 
 A file that satisfies at least one standard above, is considered a webshell and will be included in the analysis result. Even if a file is found to be other types of malware, this will add the file to the analysis result.
 
-## VI. Planned Updates
+## VI. Update history
+- 11 MAY 2024: Added Following features
+    - Examines the Shannon entropy of a given file.
+    - Obtain Rich header information, only when the given file is Portable Executable Format
+
+## VII. Planned Updates
 1. Detection Features
     - Analyze the Section's metadata
 
     - Get information related to the target file's IAT & EAT
 
     - Check TLS info. of given file
+
     - Obtain the header of a given file to speculate the malware developer's environment
 
     - Check digital certification
-    - Calculate a file's entropy to determine if the file has been packed
+
+    - Calculate a file's entropy to determine if the file has been packed(Fulfilled at 11 MAY 2024 updates)
 
 2. Service Architecture
     - Use AWS S3 bucket to store files uploaded by a user.
@@ -114,7 +121,7 @@ A file that satisfies at least one standard above, is considered a webshell and 
 3. User Experience 
     - Allow users to join, log in and store analysis results in their accounts.
 
-## VII. References
+## VIII. References
 [1] https://www.igloo.co.kr/security-information/webshell-%ED%8C%A8%ED%84%B4-%EC%88%98%EC%A7%91-%EC%A0%90%EA%B2%80-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%8B%A4%ED%96%89-%EB%B0%8F-%EC%9C%A0%ED%98%95%EB%B3%84-%EB%B6%84%EC%84%9D%EB%B0%A9%EB%B2%95/
 
 [2] https://redcanary.com/threat-detection-report/trends/webshells/ 
