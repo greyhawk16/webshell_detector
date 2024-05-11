@@ -85,14 +85,16 @@ Run `python3 deployer.py destroy` command to stop and delete this web service al
 
 
 ## V. Standards used in the detection
-1. Check if a special character is present in the file's extension, or comes with more than 1 extension.[1]
+1. Check if a special character is present in the file's extension, or comes with more than 1 extension. [[1]](#viii-references)
 
-2. For files with extestions commonly used for webshell(`php`, `jsp`, `asp`), determine if it contains more than 1 suspicious keywords(`system`, `shell_exec`, `eval`).[2]
-[3]
+2. For files with extestions commonly used for webshell(`php`, `jsp`, `asp`), determine if it contains more than 1 suspicious keywords(`system`, `shell_exec`, `eval`). [[2]
+[3]](#viii-references)
 
 3. Check the file's hash value to the known webshell's hash value.
 
 4. Send queries to VirusTotal and MalwareBazaar to check hash value(`SHA256`) of the given file is registered as webshell or other types of malware. It will show `True` if the hash is registered as webshell, and `Other` when the hash is registered but not as webshell. `False` if the hash is not found.
+
+5. A file's entropy is greater than `6.8`. [[4]](#viii-references)
 
 A file that satisfies at least one standard above, is considered a webshell and will be included in the analysis result. Even if a file is found to be other types of malware, this will add the file to the analysis result.
 
@@ -128,3 +130,5 @@ A file that satisfies at least one standard above, is considered a webshell and 
 [2] https://redcanary.com/threat-detection-report/trends/webshells/ 
 
 [3] https://github.com/thadriss/Webshell-Detect
+
+[4] https://practicalsecurityanalytics.com/file-entropy/

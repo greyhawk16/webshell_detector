@@ -344,7 +344,8 @@ def detect_webshell(root_dir):
                 row.multiple_extensions or
                 row.suspicious_extensions_with_keywords or
                 row.found_at_virus_total != False or
-                row.found_at_malware_bazaar != False
+                row.found_at_malware_bazaar != False or
+                row.file_entropy >= 6.8
             ):  # 위의 5개 기준 중 하나 이상 해당하는 경우 
                 suspect_paths.append(row)   # 웹쉘로 판단, 기록
     
