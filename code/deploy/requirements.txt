@@ -2,3 +2,6 @@ flask
 requests
 python-dotenv
 pefile
+cryptography
+asn1crypto
+signify
