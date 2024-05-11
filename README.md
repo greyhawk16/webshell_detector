@@ -117,6 +117,8 @@ A file that satisfies at least one standard above, is considered a webshell and 
 
     - Calculate a file's entropy to determine if the file has been packed(Fulfilled at 11 MAY 2024 updates)
 
+    - Validate checksum of a provided file [[5]](#viii-references)
+
 2. Service Architecture
     - Use AWS S3 bucket to store files uploaded by a user.
     - Implement Server-Client structure
@@ -132,3 +134,5 @@ A file that satisfies at least one standard above, is considered a webshell and 
 [3] https://github.com/thadriss/Webshell-Detect
 
 [4] https://practicalsecurityanalytics.com/file-entropy/
+
+[5] https://practicalsecurityanalytics.com/pe-checksum/
