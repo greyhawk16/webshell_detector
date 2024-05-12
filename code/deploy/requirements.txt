@@ -5,3 +5,4 @@ pefile
 cryptography
 asn1crypto
 signify
+lief

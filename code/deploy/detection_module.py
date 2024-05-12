@@ -24,6 +24,7 @@ import hashlib
 import pefile
 import collections
 import math
+import lief
 
 from dotenv import load_dotenv
 from signify.authenticode import SignedPEFile
@@ -210,75 +211,26 @@ def get_rich_header(file_path):
 
     return ans
 
+# 악성코드에 들어있는 인증서정보 획득
+# https://lief.re/doc/latest/tutorials/13_pe_authenticode.html
+def get_certification_info(file_path):
+    ans = {
+        'number of certificates': 0,
+        'serial numbers': [],
+    }
+    
+    try:
+            pe = lief.parse(file_path)
+            signature = pe.signatures[0]
+            ans["number of certificates"] = len(list(signature.certificates))
 
-# 악성코드 내 디지털 서명 여부 판별 및 상세정보 획득
-# 출처: https://github.com/ralphje/signify/blob/master/examples/authenticode_info.py
-def get_certification_info_R1(file_path):
+            for crt in signature.certificates:
+                ans["serial numbers"].append(int.from_bytes(crt.serial_number, 'big'))
 
-    with open(file_path, "rb") as file_obj:
-        try:
-                pe = SignedPEFile(file_obj)
-                for signed_data in pe.signed_datas:
-                    print("    Included certificates:")
-                    for cert in signed_data.certificates:
-                        print("      - Subject: {}".format(cert.subject.dn))
-                        print("        Issuer: {}".format(cert.issuer.dn))
-                        print("        Serial: {}".format(cert.serial_number))
-                        print("        Valid from: {}".format(cert.valid_from))
-                        print("        Valid to: {}".format(cert.valid_to))
+    except Exception as e:
+        print("    Error while parsing: " + str(e))
 
-                    print()
-                    print("    Signer:")
-                    print("        Issuer: {}".format(signed_data.signer_info.issuer.dn))
-                    print("        Serial: {}".format(signed_data.signer_info.serial_number))
-                    print("        Program name: {}".format(signed_data.signer_info.program_name))
-                    print("        More info: {}".format(signed_data.signer_info.more_info))
-
-                    if signed_data.signer_info.countersigner:
-                        print()
-                        if hasattr(signed_data.signer_info.countersigner, 'issuer'):
-                            print("    Countersigner:")
-                            print("        Issuer: {}".format(signed_data.signer_info.countersigner.issuer.dn))
-                            print("        Serial: {}".format(signed_data.signer_info.countersigner.serial_number))
-                        if hasattr(signed_data.signer_info.countersigner, 'signer_info'):
-                            print("    Countersigner (nested RFC3161):")
-                            print("        Issuer: {}".format(
-                                signed_data.signer_info.countersigner.signer_info.issuer.dn
-                            ))
-                            print("        Serial: {}".format(
-                                signed_data.signer_info.countersigner.signer_info.serial_number
-                            ))
-                        print("        Signing time: {}".format(signed_data.signer_info.countersigner.signing_time))
-
-                        if hasattr(signed_data.signer_info.countersigner, 'certificates'):
-                            print("        Included certificates:")
-                            for cert in signed_data.signer_info.countersigner.certificates:
-                                print("          - Subject: {}".format(cert.subject.dn))
-                                print("            Issuer: {}".format(cert.issuer.dn))
-                                print("            Serial: {}".format(cert.serial_number))
-                                print("            Valid from: {}".format(cert.valid_from))
-                                print("            Valid to: {}".format(cert.valid_to))
-
-                    print()
-                    print("    Digest algorithm: {}".format(signed_data.digest_algorithm.__name__))
-                    print("    Digest: {}".format(signed_data.spc_info.digest.hex()))
-
-                    print()
-
-                    result, e = signed_data.explain_verify()
-                    print("    {}".format(result))
-                    if e:
-                        print("    {}".format(e))
-                    print("--------")
-
-                result, e = pe.explain_verify()
-                print(result)
-                if e:
-                    print(e)
-
-        except Exception as e:
-            print("    Error while parsing: " + str(e))
-
+    return ans
 
 # IAT, EAT 정보
 def get_iat_eat(file_path):
