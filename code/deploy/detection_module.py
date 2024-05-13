@@ -24,7 +24,7 @@ import hashlib
 import pefile
 import collections
 import math
-import lief
+# import lief
 
 from dotenv import load_dotenv
 from signify.authenticode import SignedPEFile
@@ -219,16 +219,16 @@ def get_certification_info(file_path):
         'serial numbers': [],
     }
     
-    try:
-            pe = lief.parse(file_path)
-            signature = pe.signatures[0]
-            ans["number of certificates"] = len(list(signature.certificates))
+    # try:
+    #         pe = lief.parse(file_path)
+    #         signature = pe.signatures[0]
+    #         ans["number of certificates"] = len(list(signature.certificates))
 
-            for crt in signature.certificates:
-                ans["serial numbers"].append(int.from_bytes(crt.serial_number, 'big'))
+    #         for crt in signature.certificates:
+    #             ans["serial numbers"].append(int.from_bytes(crt.serial_number, 'big'))
 
-    except Exception as e:
-        print("    Error while parsing: " + str(e))
+    # except Exception as e:
+    #     print("    Error while parsing: " + str(e))
 
     return ans
 

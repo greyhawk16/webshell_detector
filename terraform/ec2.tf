@@ -52,7 +52,7 @@ resource "aws_security_group" "alone_web" {
 
 
 resource "aws_instance" "app_server" {
-  ami = "ami-0b8b44ec9a8f90422"  
+  ami = "ami-0ddda618e961f2270"  
   instance_type = "t2.micro"
   key_name = "${aws_key_pair.this.key_name}"
   vpc_security_group_ids = ["${aws_security_group.alone_web.id}"] # ["sg-0f1333e985b024d83"]
@@ -67,7 +67,7 @@ resource "aws_instance" "app_server" {
 
   connection {
         type = "ssh"
-        user = "ubuntu"
+        user = "ec2-user"
         host = self.public_ip
         private_key = "${file(var.ssh-private-key-for-ec2)}"
   }
