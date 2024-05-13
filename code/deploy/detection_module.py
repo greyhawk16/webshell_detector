@@ -27,7 +27,7 @@ import math
 # import lief
 
 from dotenv import load_dotenv
-from signify.authenticode import SignedPEFile
+# from signify.authenticode import SignedPEFile
 
 
 load_dotenv()
