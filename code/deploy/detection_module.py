@@ -44,7 +44,7 @@ class subject:                                               # 검사한 파일�
         self.found_at_virus_total = False                    # VirusTotal에 웹쉘 또는 기타 악성코드로 등록되어 있는 지
         self.found_at_malware_bazaar = False                 # MalwareBazaar 에 웹쉘 또는 그 외 악성코드로 등록되어 있는 지
         self.file_entropy = 0                                # 파일의 엔트로피(범위: 0 이상 & 8이하) 계산, 7 이상 -> 악성코드로 간주
-        self.rich_header_key = None
+        self.rich_header_key = None                          # Size: 4 Bytes
         self.rich_header_records = None
 
 
@@ -280,7 +280,7 @@ def write_csv(suspect_paths):
                        'Result from MalwareBazaar',
                        'Shannon Entropy',
                        'Rich header Key',
-                       'Rich header Records'
+                    #    'Rich header Records'
                        ]
         writer = csv.DictWriter(csv_file, fieldnames=field_names)
         writer.writeheader()
@@ -306,7 +306,7 @@ def write_csv(suspect_paths):
                 row.found_at_malware_bazaar,
                 row.file_entropy,
                 row.rich_header_key,
-                row.rich_header_records
+                # row.rich_header_records
             ]
 
             temp = dict()
@@ -371,7 +371,7 @@ def detect_webshell(root_dir):
             
             rich_header_info = get_rich_header(row.file_path)
             row.rich_header_key = rich_header_info['key']
-            row.rich_header_records = rich_header_info['records']
+            # row.rich_header_records = rich_header_info['records']
 
             if (
                 row.special_character_in_file_extension or
