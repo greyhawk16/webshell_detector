@@ -102,6 +102,7 @@ A file that satisfies at least one standard above, is considered a webshell and 
 - 11 MAY 2024: Added Following features
     - Examines the Shannon entropy of a given file.
     - Obtain Rich header information, only when the given file is Portable Executable Format
+- 21 MAY 2024: Modified function `get_rich_header` to obtain Rich header's key(`4 Bytes`), without other information from Rich header.
 
 ## VII. Planned Updates
 1. Detection Features
