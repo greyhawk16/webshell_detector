@@ -24,10 +24,9 @@ import hashlib
 import pefile
 import collections
 import math
-# import lief
 
 from dotenv import load_dotenv
-# from signify.authenticode import SignedPEFile
+# Docker에서 에러가 발생하는 파이썬 라이브러리: signify, lief
 
 
 load_dotenv()
@@ -131,7 +130,7 @@ def check_hash_via_virus_total(file_hash):
             for r in res:                    # 해당되는 기준 순회
                 tmp = r['rule_name']         # 기준 이름
                 if 'webshell' in tmp:        # 기준 이름에 'webshell' 단어 포함 시 -> 웹쉘로 판단
-                    return 'webshell'  
+                    return 'Webshell'  
             else:
                 return 'Other'
         except:
@@ -156,7 +155,7 @@ def check_hash_via_malware_bazaar(file_hash):
             tag_list = set(tag_list)             # 시간복잡도 향상을 위해, set으로 변환
 
             if 'webshell' in tag_list:           # 해당 악성코드의 대크에 'webshell'이 있다면 
-                return 'webshell'                # 웹쉘로 판단
+                return 'Webshell'                # 웹쉘로 판단
             else:
                 return 'Other'                  # 웹쉘이 아닌 다른 악성코드로 판단
         else:
