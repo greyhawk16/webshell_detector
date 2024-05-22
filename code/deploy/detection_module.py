@@ -46,6 +46,8 @@ class subject:                                               # 검사한 파일�
         self.file_entropy = 0                                # 파일의 엔트로피(범위: 0 이상 & 8이하) 계산, 7 이상 -> 악성코드로 간주
         self.rich_header_key = None                          # Size: 4 Bytes
         self.rich_header_records = None
+        self.iat_info = None
+        self.eat_info = None
 
 
 # 1. 확장자 속 특수문자 파악
@@ -243,17 +245,23 @@ def get_iat_eat(file_path):
             dll_info = {
                 'DLL': file.dll.decode(),
                 'Functions': [
-                    {"Function": function.name.decode() if function.name else f"ordinal {function.ordinal}"}
+                    function.name.decode() if function.name else f"ordinal {function.ordinal}"
                     for function in file.imports
                 ]
             }
             import_info.append(dll_info)
 
+    # dll 파일인 경우, DIRECTORY_ENTRY_EXPORT 속성 보유
     if hasattr(pe, 'DIRECTORY_ENTRY_EXPORT'):
-        # 추후 추가 예정
-        export_info.append("export")
+        exports = [(e.ordinal, e.name) for e in pe.DIRECTORY_ENTRY_EXPORT.symbols]
+        for export in sorted(exports):
+            export_info.append(export)
 
-    return [import_info, export_info]
+    ans = {
+        'IAT':import_info,
+        'EAT':export_info
+    }
+    return ans
 
 
 # section이 지닌 메타데이터 정보 획득
@@ -372,6 +380,10 @@ def detect_webshell(root_dir):
             rich_header_info = get_rich_header(row.file_path)
             row.rich_header_key = rich_header_info['key']
             # row.rich_header_records = rich_header_info['records']
+
+            # iat_eat = get_iat_eat(row.file_path)
+            # row.iat_info = iat_eat['IAT']
+            # row.eat_info = iat_eat['EAT']
 
             if (
                 row.special_character_in_file_extension or
