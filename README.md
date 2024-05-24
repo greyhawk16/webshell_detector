@@ -94,7 +94,7 @@ Run `python3 deployer.py destroy` command to stop and delete this web service al
 
 4. Send queries to VirusTotal and MalwareBazaar to check hash value(`SHA256`) of the given file is registered as webshell or other types of malware. It will show `True` if the hash is registered as webshell, and `Other` when the hash is registered but not as webshell. `False` if the hash is not found.
 
-5. A file's entropy is greater than `6.8`. [[4]](#viii-references)
+5. A file's entropy is greater than `7.2`. [[4]](#viii-references)
 
 A file that satisfies at least one standard above, is considered a webshell and will be included in the analysis result. Even if a file is found to be other types of malware, this will add the file to the analysis result.
 
