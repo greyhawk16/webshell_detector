@@ -199,15 +199,10 @@ def get_rich_header(file_path):
         if rich_header != None:
             print(f"Key: {rich_header['key']}")
             ans['key'] = rich_header['key']
-
-            if 'records' in rich_header:
-                records = rich_header['records']
-                ans['records'] = records 
     
     except Exception as e:
         ans = {
-        'key': 'Not PEfile',
-        'records': 'Not PEfile'
+        'key': 'Not PEfile'
     }
 
     return ans
@@ -236,6 +231,8 @@ def get_certification_info(file_path):
 # IAT, EAT 정보
 def get_iat_eat(file_path):
     pe = pefile.PE(file_path)
+    d = [pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_EXPORT"]]
+    pe.parse_data_directories(directories=d)
     import_info = []
     export_info = []
 
@@ -246,11 +243,12 @@ def get_iat_eat(file_path):
                 'Functions': [
                     function.name.decode() if function.name else f"ordinal {function.ordinal}"
                     for function in file.imports
+                    # {"Function": function.name.decode() if function.name else f"ordinal {function.ordinal}"}
+                    # for function in file.imports
                 ]
             }
             import_info.append(dll_info)
 
-    # dll 파일인 경우, DIRECTORY_ENTRY_EXPORT 속성 보유
     if hasattr(pe, 'DIRECTORY_ENTRY_EXPORT'):
         exports = [(e.ordinal, e.name) for e in pe.DIRECTORY_ENTRY_EXPORT.symbols]
         for export in sorted(exports):
